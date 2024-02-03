@@ -352,8 +352,9 @@ onMounted(async () => {
 
 <style lang="scss">
 .m-reward-navigation-drawer {
-  height: 100vh !important;
-  bottom: 0px !important;
+  height: 100%!important;
+  width: 100%!important;
+  top: 0px!important;
   z-index: 2147483645 !important;
   background: $agent_card_bg !important;
   .m-reward-menu{
