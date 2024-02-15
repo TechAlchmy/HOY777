@@ -15,6 +15,8 @@ export namespace NETWORK {
     static USER_AMOUNT = 'user/amount'; // get user amount
     static USER_INFO = '/user/info'; // get user profile
     static USER_BALANCE = '/user/balance'; // get user balance
+    static SET_USER_CURRENCY = '/user/currency'; // set user currency
+    
     static USER_CHANGE = '/user/change'; // update user info
     static USER_EMAIL = '/user/email'; // update email
     static USER_PASSWORD = '/user/password'; // update password
@@ -81,7 +83,9 @@ export namespace NETWORK {
     static VIP_LEVEL_AWARD_HISTORY = '/user/viplevelawardhistory' // Obtain VIP level reward record
     static VIP_TIMES_HISTORY = '/user/viptimeshistory' // Get VIP weekly and monthly reward records
     static VIP_SIGNIN_REWARDS = '/user/vipsignin/award'; // Receive VIP sign-in rewards
-    static VIP_SIGNIN = '/user/vipsignin'; // Get VIP check-in content
+    // static VIP_SIGNIN = '/user/vipsignin'; // Get VIP check-in content
+    static VIP_SIGNIN = '/user/vip/signinaward/list';  // Get VIP check-in content  获取签到奖励
+    static VIP_SIGNINAWARD_RECEIVE = '/user/vip/signinaward/receive';  // Get sign-in rewards  领取签到奖励
     static VIP_LEVELUP_LIST = '/user/viplevelup/list'; // Get VIP upgrade reward information
     static VIP_LEVELUP_RECEIVE = '/user/viplevelup/receive'; // Receive VIP upgrade rewards
     static USER_VIP_CYCLEAWARD_LIST = '/user/vip/cycleaward/list';  // Get periodic rewards  获取周期性奖励
@@ -113,7 +117,7 @@ export namespace NETWORK {
 
   // activity api
   export class ACTIVITY {
-    static USER_ACTIVITY_LIST = '/user/activity/list'
+    static USER_ACTIVITY_LIST = '/activity/list'
   }
 
   export class Reward{
@@ -123,5 +127,9 @@ export namespace NETWORK {
 
   export class Banner{
     static BANNER_LIST = '/banner/list'; // banner list
+  }
+
+  export class Currency{
+    static CURRENCY_LIST = '/user/balance/list'; // currency list
   }
 }

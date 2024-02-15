@@ -21,7 +21,7 @@ import { ElNotification } from "element-plus";
 import SuccessIcon from "@/components/global/notification/SuccessIcon.vue";
 import WarningIcon from "@/components/global/notification/WarningIcon.vue";
 import { useToast } from "vue-toastification";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const MSignup = defineComponent({
   components: {
@@ -44,6 +44,8 @@ const MSignup = defineComponent({
     const { setNickNameDialogVisible } = authStore();
     const { dispatchUserBalance } = userStore();
     const { dispatchSocketConnect } = socketStore();
+    const { setAuthDialogVisible } = authStore();
+
     const { width } = useDisplay();
     const route = useRoute();
 
@@ -51,7 +53,7 @@ const MSignup = defineComponent({
     const state = reactive({
       currentPage: 0, // default signup form
       dialog: true,
-      isAgreed: false,
+      isAgreed: true,
       socialIconList: [
         new URL("@/assets/public/svg/icon_public_28.svg", import.meta.url).href,
         new URL("@/assets/public/svg/icon_public_29.svg", import.meta.url).href,
@@ -68,7 +70,7 @@ const MSignup = defineComponent({
         emailAddress: "",
         password: "",
         promoCode: "",
-        isAgreed: false,
+        isAgreed: true,
         visible: false,
       },
       userName: "",
@@ -80,9 +82,9 @@ const MSignup = defineComponent({
       isShowUsernameValidation: false,
       passwordValidationStrList: [
         t("signup.formPage.validation.password.items[0]"),
-        t("signup.formPage.validation.password.items[1]"),
-        t("signup.formPage.validation.password.items[2]"),
-        t("signup.formPage.validation.password.items[3]"),
+        // t("signup.formPage.validation.password.items[1]"),
+        // t("signup.formPage.validation.password.items[2]"),
+        // t("signup.formPage.validation.password.items[3]"),
       ],
       userNameValidationStrList: [
         t("signup.displayNamePage.validation.username.items[0]"),
@@ -158,16 +160,21 @@ const MSignup = defineComponent({
 
     const passwordValidationList = computed((): boolean[] => {
       const password = state.formData.password;
+
       // 8-30 Characters in length
       const condition1 = password.length <= 30 && password.length >= 8;
-      // Contains one upper and one lowercase character
-      const condition2 = /[A-Z]/.test(password) && /[a-z]/.test(password);
-      // Contains a number
-      const condition3 = /\d/.test(password);
-      // Contains Special Code
-      const condition4 = /[~!@#$%&*()_-]/.test(password);
 
-      return [condition1, condition2, condition3, condition4];
+      // Contains one upper and one lowercase character
+      // const condition2 = /[A-Z]/.test(password) && /[a-z]/.test(password);
+
+      // Contains a number
+      // const condition3 = /\d/.test(password);
+
+      // Contains Special Code
+      // const condition4 = /[~!@#$%&*()_-]/.test(password);
+
+      // return [condition1, condition2, condition3, condition4];
+      return [condition1];
     });
 
     const userNameValidationList = computed((): boolean[] => {
@@ -316,7 +323,11 @@ const MSignup = defineComponent({
         // ).href;
         // state.notificationText = t("signup.submit_result.success_text");
       } else {
-        if (errMessage.value == "Registering an existing account is abnormal") {
+        console.log;
+        if (
+          errMessage.value ==
+          "The account you entered has been used by someone else, please input again"
+        ) {
           state.currentPage = state.PAGE_TYPE.ALREADY_REGISTERED;
         } else {
           const toast = useToast();
@@ -449,6 +460,16 @@ const MSignup = defineComponent({
       state.closeBtnShow = false;
     });
 
+    const router = useRouter();
+    const authDialogVisible = computed(() => {
+      const { getAuthDialogVisible } = storeToRefs(authStore());
+      return getAuthDialogVisible.value;
+    });
+    const goPrivatePolicy = async () => {
+      await router.push({ name: "About_US", query: { index: 1 } });
+      setSignUpForm(false);
+      emit("close");
+    };
     return {
       t,
       ...toRefs(state),
@@ -473,6 +494,7 @@ const MSignup = defineComponent({
       handleEmailFocus,
       mergeEmail,
       cancelConfirm,
+      goPrivatePolicy,
     };
   },
 });
@@ -482,18 +504,19 @@ export default MSignup;
 
 <template>
   <div class="m-signup-container">
-    <!-- <div
-    class="m-signup-container"
-    :style="{ height: containerHeight + 'px', overflowY: overflow ? 'auto' : 'unset' }"
-  > -->
-    <SignupHeader v-if="currentPage !== PAGE_TYPE.DISPLAY_NAME" />
-    <div
-      class="m-signup-body px-6"
-      :style="{
-        height: bodyHeight + 'px',
-      }"
-    >
-      <!-- SIGN UP FORM  -->
+    <!-- <SignupHeader v-if="currentPage !== PAGE_TYPE.DISPLAY_NAME" /> -->
+    <div class="m-signup-body px-6">
+      <div class="my-15 d-flex justify-center align-center">
+        <img src="@/assets/public/image/logo_public_01.png" width="86" />
+        <div class="ml-2">
+          <div class="text-800-16 white">
+            {{ t("signup.formPage.header.titleLine1") }}
+          </div>
+          <div class="text-900-20 white">
+            {{ t("signup.formPage.header.titleLine2") }}
+          </div>
+        </div>
+      </div>
       <v-form
         v-if="currentPage === PAGE_TYPE.SIGNUP_FORM"
         ref="form"
@@ -608,7 +631,7 @@ export default MSignup;
           />
           <p class="text-600-12 gray ml-1">
             {{ t("signup.formPage.agree.prefix") }}
-            <span class="white pointer">
+            <span class="white pointer" @click="goPrivatePolicy">
               {{ t("signup.formPage.agree.bold") }}
             </span>
             {{ t("signup.formPage.agree.suffix") }}
@@ -630,7 +653,7 @@ export default MSignup;
           <p class="m-divide-text">
             {{ t("signup.formPage.divider") }}
           </p>
-          <v-divider color="white" />
+          <v-divider class="mx-10" style="border: 1px solid #414968 !important" />
         </v-row>
         <v-row class="mt-6">
           <v-col cols="8" offset="2">
@@ -854,7 +877,7 @@ export default MSignup;
 }
 
 .m-label-text-md {
-  margin-top: 142px;
+  margin-top: 80px;
   font-weight: 600;
   font-size: 16px;
   font-family: "Inter";
@@ -946,18 +969,16 @@ export default MSignup;
 .m-disable-password {
   position: absolute;
   top: 16px;
-  right: 24px;
+  right: 10px;
   cursor: pointer;
 }
 
 // mobile dialog contaier
 .m-signup-container {
-  border-radius: 26px 26px 0px 0px;
-  position: fixed;
-  bottom: 0;
-  height: 613px;
+  height: 100vh;
   width: 100%;
-  background: var(--bg-2-e-274-c, #2e274c);
+  background: $color_1;
+  overflow-y: auto;
 
   .v-field--variant-solo {
     background: transparent !important;
@@ -970,13 +991,13 @@ export default MSignup;
 
 // wrapper
 .m-signup-body {
-  border-radius: 8px 8px 0px 0px;
-  background: var(--bg-2-e-274-c, #1D2027);
-  position: absolute;
-  bottom: 0px;
-  width: 100%;
-  height: 464px;
-  z-index: 99;
+  // border-radius: 8px 8px 0px 0px;
+  // background: var(--bg-2-e-274-c, #1d2027);
+  // position: absolute;
+  // bottom: 0px;
+  // width: 100%;
+  // height: 464px;
+  // z-index: 99;
 
   // overflow-y: auto;
   .form-textfield div.v-field__field {
@@ -1018,7 +1039,7 @@ export default MSignup;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  color: #23262f;
+  color: #414968;
   position: relative;
   top: 12px;
   text-align: center;
@@ -1130,6 +1151,7 @@ export default MSignup;
   .v-field__field {
     input {
       padding-top: 2px !important;
+      padding-right: 30px !important;
     }
     .v-label.v-field-label {
       font-family: "Inter";

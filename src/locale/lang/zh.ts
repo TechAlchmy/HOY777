@@ -4,8 +4,8 @@ export const lang: langType = {
   main: {
     signupButton: "Register",
     loginButton: "Login",
-    logo_text_1: "BLUE",
-    logo_text_2: "GAME",
+    logo_text_1: "HOY",
+    logo_text_2: "777",
   },
   login: {
     formPage: {
@@ -32,7 +32,7 @@ export const lang: langType = {
     formPage: {
       header: {
         titleLine1: " Register at ",
-        titleLine2: " BLUE.GAME ",
+        titleLine2: " HOY777 ",
       },
       emailAddress: "Email Address",
       password: "Password",
@@ -147,6 +147,48 @@ export const lang: langType = {
       live_casino: 'Live Casino',
       provider_text: 'Providers'
     },
+    sport_sub_menu: {
+      text_1: "My Bets",
+      text_2: "Popular",
+      text_3: "Brasileiro Serie A",
+      text_4: "La Liga",
+      text_5: "Premier League",
+      text_6: "UEFA Champions League",
+      text_7: "Italy Serie A",
+      text_8: "Germany Bundesliga",
+      text_9: "French Ligue 1",
+      text_10: "Soccer",
+      text_11: "FIFA",
+      text_12: "Sports",
+      text_13: "Esports",
+      text_14: "American Football",
+      text_15: "Badminton",
+      text_16: "Baseball",
+      text_17: "Basketball",
+      text_18: "Cricket",
+      text_19: "Cycling",
+      text_20: "Darts",
+      text_21: "Formula 1",
+      text_22: "Futsal",
+      text_23: "Golf",
+      text_24: "Handball",
+      text_25: "lce Hockey",
+      text_26: "MLB",
+      text_27: "MMA",
+      text_28: "NFL",
+      text_29: "Motorcycle Racing",
+      text_30: "Politics & Entertainment",
+      text_31: "Rugby",
+      text_32: "Snooker",
+      text_33: "Table Tennis",
+      text_34: "Tennis",
+      text_35: "Volleyball",
+      text_36: "Waterpolo",
+      text_37: "Counter-Strike",
+      text_38: "Dota 2",
+      text_39: "EIectronic Leagues",
+      text_40: "League Of Legends",
+    },
     language: {
       title: 'Language',
       english: 'English',
@@ -168,8 +210,8 @@ export const lang: langType = {
     }
   },
   appBar: {
-    logo_text_1: "BLUE",
-    logo_text_2: "GAME",
+    logo_text_1: "HOY",
+    logo_text_2: "777",
     id: "ID",
     account: "Account",
     deposit: "Deposit",
@@ -1352,6 +1394,7 @@ export const lang: langType = {
       text_9: "Type",
       text_10: "Bonus",
       text_11: "Vip Level",
+      text_12: "Vip Rank",
     }
   },
   account: {
@@ -1525,7 +1568,14 @@ export const lang: langType = {
       text_14: "Live Casino",
       text_15: "Free withdrawal amount",
       text_16: "Withdrawal fees",
-      text_17: "Withdrawal Benefits"
+      text_17: "Withdrawal Benefits",
+      text_18: "Withdrawal restrictions",
+      text_19: "Number of ",
+      text_20: "withdrawals per day",
+      text_21: "withdrawals per month",
+      text_22: "Daily Withdrawal ",
+      text_23: "Monthly Withdrawal ",
+      text_24: "Limit"
     },
     footer_body: {
       text_1: "VIP GROUP",
@@ -1579,45 +1629,96 @@ export const lang: langType = {
       text_9: "",
     },
     vip_level_info: {
+      progress: {
+        text_1: "Get rewarded every time you fill the progress bar. Leveling upentitles you to bigger and better rewa rds！",
+        text_2: "Rewards available",
+        text_3: "CLAIM",
+        text_4: "View Records",
+        text_5: "You must have made a deposit or referred a friend in the last 30 days to receive the bonus",
+        text_6: "REFER",
+        text_7: "DEPOSIT",
+        text_8: "VIP GROUP",
+        text_9: "Join our VIP group Get instant access to more events and bonuses",
+        text_10: "Join in now",
+        text_11: 'What is an " Evolution Bonus"?',
+        text_12: "Deposit",
+        text_13: "Wager",
+        text_14: 'What is an " Evolution Bonus"?What is an " Evolution Bonus"?What is an " Evolution Bonus"?What is an " Evolution Bonus"?What is an " Evolution Bonus"?',
+        text_15: 'What is an " Weekly Bounes"?',
+        text_16: 'What is an " Weekly Bounes"?What is an " Weekly Bounes"?What is an " Weekly Bounes"?What is an " Weekly Bounes"?What is an " Weekly Bounes"?'
+      },
+      bonus: {
+        text_1: "Cashback",
+        text_2: "CLAIM",
+        text_3: "Membership Day",
+        text_4: "AvailabIe at",
+        text_5: "VIP Week Gift",
+        text_6: "VIP Month Gift",
+        text_7: "VIP Rank Bonus",
+      },
+      upgrade: {
+        text_1: "Level Up!",
+        text_2: "Level",
+        text_3: "Congratulations on leveling up!",
+        text_4: "Congrats on the award!",
+        text_5: "MXN",
+        text_6: "Get It Right Now"
+      },
       black_iron: {
-        bonus: '',
-        rebate: '',
-        fee: ''
+        week: '',
+        moon: '',
+        cash: '',
+        mosaic: '',
+        withdraw: ''
       },
       bronze: {
-        bonus: 'Level 2 Bronze Cash Prize (bonus or real gold)',
-        rebate: 'Code rebate',
-        fee: ''
+        week: 'Bronze Rank Weekly Rewards',
+        moon: 'Bronze rank monthly reward',
+        cash: 'Bronze cash prize for level 1~24',
+        mosaic: 'Code rebate (2%~2.4%)',
+        withdraw: ''
       },
       silver: {
-        bonus: 'Level 25 Silver Cash Prize (bonus or real gold)',
-        rebate: 'Code rebate',
-        fee: ''
+        week: 'Silver Rank Weekly Rewards',
+        moon: 'Silver tier monthly rewards',
+        cash: 'Silver cash prize for level 25~49',
+        mosaic: 'Code rebate (2.6%)',
+        withdraw: ''
       },
       gold: {
-        bonus: 'Level 50 gold cash prize (bonus or real gold)',
-        rebate: 'Code rebate',
-        fee: ''
+        week: 'Gold Rank Weekly Rewards',
+        moon: 'Gold rank monthly rewards',
+        cash: 'Gold cash prize for level 50~75',
+        mosaic: 'Code rebate (2.8%)',
+        withdraw: ''
       },
       platinum: {
-        bonus: 'Level 76 Platinum Cash Award (bonus or real gold)',
-        rebate: 'Code rebate',
-        fee: 'Discount on withdrawal fees, 5,000 fee-free withdrawal limit'
+        week: 'Platinum Rank Weekly Rewards',
+        moon: 'Platinum Rank Monthly Reward',
+        cash: 'Platinum cash prize for level 76~99',
+        mosaic: 'Code rebate (3.0%)',
+        withdraw: 'Withdrawal fee discount (1.5%), 5,000 fee-free withdrawal limit'
       },
       diamonds: {
-        bonus: 'Level 100 diamond cash prize (bonus or real gold)',
-        rebate: 'Code rebate',
-        fee: 'Discount on withdrawal fees, 20,000 fee-free withdrawal limit'
+        week: 'Diamond Rank Weekly Rewards',
+        moon: 'Diamond Rank Monthly Reward',
+        cash: 'Level 100~149 Diamond Cash Prize',
+        mosaic: 'Code rebate (3.2%~3.4%)',
+        withdraw: 'Withdrawal fee discount (1.5%), fee-free withdrawal limit of 10,000~25,000'
       },
       yellow_diamond: {
-        bonus: 'Level 150 yellow diamond cash prize (bonus or real gold)',
-        rebate: 'Code rebate',
-        fee: 'Discount on withdrawal fees, 20,000 fee-free withdrawal limit'
+        week: 'Yellow Diamond Rank Weekly Reward',
+        moon: 'Yellow Diamond Rank Monthly Reward',
+        cash: 'Level 150~199 Yellow Diamond Cash Prize',
+        mosaic: 'Code rebate (3.6%~4.5%)',
+        withdraw: 'Withdrawal fee discount (1.0%), fee-free withdrawal limit of 40,000~60,000'
       },
       blue_diamond: {
-        bonus: 'Level 200 blue diamond cash prize (bonus or real gold)',
-        rebate: 'Code rebate',
-        fee: 'Discount on withdrawal fees, 80,000 fee-free withdrawal limit'
+        week: 'Blue Diamond Rank Weekly Rewards',
+        moon: 'Blue Diamond Rank Monthly Rewards',
+        cash: 'Level 200+ Blue Diamond Cash Prize',
+        mosaic: 'Code rebate (5.0%)',
+        withdraw: 'Withdrawal fee discount (1.0%), 80,000 fee-free withdrawal limit'
       }
     }
   },

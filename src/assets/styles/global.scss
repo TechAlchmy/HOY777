@@ -781,7 +781,8 @@ button:active:enabled {
 // dialog
 .v-overlay {
     .v-overlay__scrim {
-        opacity: 0.72;
+        background: black;
+        opacity: 0.8;
     }
 }
 

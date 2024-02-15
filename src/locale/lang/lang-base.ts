@@ -19,6 +19,7 @@ export type langType = {
     forgotPasswordPage: {
       title: string,
       submit: string,
+      back_text: string
       notification: string,
     },
     submit_result: {
@@ -145,6 +146,48 @@ export type langType = {
       live_casino: string
       provider_text: string
     },
+    sport_sub_menu: {
+      text_1: string
+      text_2: string
+      text_3: string
+      text_4: string
+      text_5: string
+      text_6: string
+      text_7: string
+      text_8: string
+      text_9: string
+      text_10: string
+      text_11: string
+      text_12: string
+      text_13: string
+      text_14: string
+      text_15: string
+      text_16: string
+      text_17: string
+      text_18: string
+      text_19: string
+      text_20: string
+      text_21: string
+      text_22: string
+      text_23: string
+      text_24: string
+      text_25: string
+      text_26: string
+      text_27: string
+      text_28: string
+      text_29: string
+      text_30: string
+      text_31: string
+      text_32: string
+      text_33: string
+      text_34: string
+      text_35: string
+      text_36: string
+      text_37: string
+      text_38: string
+      text_39: string
+      text_40: string
+    }
     language: {
       title: string
       english: string
@@ -1350,6 +1393,7 @@ export type langType = {
       text_9: string
       text_10: string
       text_11: string
+      text_12: string
     }
   }
   account: {
@@ -1584,45 +1628,96 @@ export type langType = {
       text_9: string
     },
     vip_level_info: {
+      progress: {
+        text_1: string,
+        text_2: string,
+        text_3: string,
+        text_4: string,
+        text_5: string,
+        text_6: string,
+        text_7: string,
+        text_8: string,
+        text_9: string,
+        text_10: string,
+        text_11: string,
+        text_12: string,
+        text_13: string,
+        text_14: string,
+        text_15: string,
+        text_16: string,
+      },
+      bonus: {
+        text_1: string,
+        text_2: string,
+        text_3: string,
+        text_4: string,
+        text_5: string,
+        text_6: string,
+        text_7: string,
+      },
+      upgrade: {
+        text_1: string,
+        text_2: string,
+        text_3: string,
+        text_4: string,
+        text_5: string,
+        text_6: string,
+      },
       black_iron: {
-        bonus: string,
-        rebate: string,
-        fee: string
+        week: string,
+        moon: string,
+        cash: string,
+        mosaic: string,
+        withdraw: string
       },
       bronze: {
-        bonus: string,
-        rebate: string,
-        fee: string,
+        week: string,
+        moon: string,
+        cash: string,
+        mosaic: string,
+        withdraw: string
       },
       silver: {
-        bonus: string,
-        rebate: string,
-        fee: string,
+        week: string,
+        moon: string,
+        cash: string,
+        mosaic: string,
+        withdraw: string
       },
       gold: {
-        bonus: string,
-        rebate: string,
-        fee: string,
+        week: string,
+        moon: string,
+        cash: string,
+        mosaic: string,
+        withdraw: string
       },
       platinum: {
-        bonus: string,
-        rebate: string,
-        fee: string,
+        week: string,
+        moon: string,
+        cash: string,
+        mosaic: string,
+        withdraw: string
       },
       diamonds: {
-        bonus: string,
-        rebate: string,
-        fee: string,
+        week: string,
+        moon: string,
+        cash: string,
+        mosaic: string,
+        withdraw: string
       },
       yellow_diamond: {
-        bonus: string,
-        rebate: string,
-        fee: string,
+        week: string,
+        moon: string,
+        cash: string,
+        mosaic: string,
+        withdraw: string
       },
       blue_diamond: {
-        bonus: string,
-        rebate: string,
-        fee: string,
+        week: string,
+        moon: string,
+        cash: string,
+        mosaic: string,
+        withdraw: string
       }
     }
   }

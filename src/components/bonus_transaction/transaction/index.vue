@@ -74,17 +74,17 @@ const vipTimesHistory = computed(() => {
 });
 
 const transactionTabs = ref<Array<string>>([
-  t("transaction.tab.game_history"),
+  // t("transaction.tab.game_history"),
   t("transaction.tab.transactions"),
   t("transaction.tab.deposit"),
   t("transaction.tab.withdrawal"),
   t("transaction.tab.vip"),
-  t("transaction.tab.referral"),
+  // t("transaction.tab.referral"),
 ]);
 const pageSize = ref<number>(8);
 const pageNum = ref<number>(1);
 const vipTimesHistoryIndex = ref<number>(1);
-const selectedTab = ref<any>(t("transaction.tab.game_history"));
+const selectedTab = ref<any>(t("transaction.tab.transactions"));
 
 const transactionTab = computed(() => {
   const { getTransactionTab } = storeToRefs(bonusTransactionStore());
@@ -124,7 +124,7 @@ watch(selectedTab, async (value) => {
 onMounted(async () => {
   selectedTab.value = route.query.tab
     ? route.query.tab
-    : t("transaction.tab.game_history");
+    : t("transaction.tab.transactions");
   selectedTab.value =
     transactionTab.value == "" ? selectedTab.value : transactionTab.value;
   // await dispatchGameHistory({
@@ -144,22 +144,22 @@ onMounted(async () => {
     start_time: Math.ceil(moment().valueOf() / 1000),
     lid: 0,
   });
-  await dispatchVipRebateHistory({
-    page_num: pageNum.value,
-    page_size: pageSize.value,
-    start_time: Math.ceil(moment().valueOf() / 1000),
-  });
-  await dispatchVipLevelRewardHistory({
-    page_num: pageNum.value,
-    page_size: pageSize.value,
-    start_time: Math.ceil(moment().valueOf() / 1000),
-  });
-  await dispatchVipTimesHistory({
-    index: vipTimesHistoryIndex.value,
-    page_num: pageNum.value,
-    page_size: pageSize.value,
-    start_time: Math.ceil(moment().valueOf() / 1000),
-  });
+  // await dispatchVipRebateHistory({
+  //   page_num: pageNum.value,
+  //   page_size: pageSize.value,
+  //   start_time: Math.ceil(moment().valueOf() / 1000),
+  // });
+  // await dispatchVipLevelRewardHistory({
+  //   page_num: pageNum.value,
+  //   page_size: pageSize.value,
+  //   start_time: Math.ceil(moment().valueOf() / 1000),
+  // });
+  // await dispatchVipTimesHistory({
+  //   index: vipTimesHistoryIndex.value,
+  //   page_num: pageNum.value,
+  //   page_size: pageSize.value,
+  //   start_time: Math.ceil(moment().valueOf() / 1000),
+  // });
 });
 </script>
 <template>
@@ -190,13 +190,13 @@ onMounted(async () => {
     </v-slide-group-item>
   </v-slide-group>
   <v-window v-model="selectedTab" :disable-swipe="true" :touch="touchless()">
-    <v-window-item
+    <!-- <v-window-item
       :value="t('transaction.tab.game_history')"
       style="margin-left: 10px; margin-right: 10px"
     >
       <GameHistory v-if="mobileWidth > 600" />
       <MGameHistory v-else />
-    </v-window-item>
+    </v-window-item> -->
     <v-window-item
       :value="t('transaction.tab.transactions')"
       style="margin-left: 10px; margin-right: 10px"
@@ -247,7 +247,7 @@ onMounted(async () => {
         v-else
       />
     </v-window-item>
-    <v-window-item
+    <!-- <v-window-item
       :value="t('transaction.tab.referral')"
       style="margin-left: 10px; margin-right: 10px"
     >
@@ -261,12 +261,12 @@ onMounted(async () => {
         :withdrawHistoryItem="withdrawHistoryItem"
         v-else
       />
-    </v-window-item>
+    </v-window-item> -->
   </v-window>
 </template>
 <style lang="scss">
 .slide-tabs {
-  background: #15161C !important;
+  background: #15161c !important;
   margin: 8px !important;
   border-radius: 8px !important;
 }
@@ -277,7 +277,6 @@ onMounted(async () => {
 }
 
 .transaction-tab-btn {
-  
   box-shadow: 0px 4px 6px 1p rgba(0, 0, 0, 0.21) !important;
   .v-btn__content {
     font-weight: 700;

@@ -24,6 +24,7 @@ import "swiper/css/pagination";
 import { Pagination, Virtual, Autoplay, Navigation } from "swiper/modules";
 import vipLevelGroups from "@/utils/VipLevelGroup";
 import { storeToRefs } from "pinia";
+import {GameBigWinItem} from "@/interface/game"
 
 const { t } = useI18n();
 const { width } = useDisplay();
@@ -66,74 +67,6 @@ const svgIconTransform = (el: any) => {
 };
 
 /* live win game temp list */
-const liveWinList = ref<Array<LiveWinItem>>([
-  {
-    image: new URL("@/assets/home/image/img_win_01.png", import.meta.url).href,
-    level: 0,
-    game_name: "Mgnonk...",
-    betting_amount: "$12.33",
-  },
-  {
-    image: new URL("@/assets/home/image/img_win_02.png", import.meta.url).href,
-    level: 1,
-    game_name: "Mgnonk...",
-    betting_amount: "$12.33",
-  },
-  {
-    image: new URL("@/assets/home/image/img_win_03.png", import.meta.url).href,
-    level: 2,
-    game_name: "Mgnonk...",
-    betting_amount: "$12.33",
-  },
-  {
-    image: new URL("@/assets/home/image/img_win_01.png", import.meta.url).href,
-    level: 3,
-    game_name: "Mgnonk...",
-    betting_amount: "$12.33",
-  },
-  {
-    image: new URL("@/assets/home/image/img_win_02.png", import.meta.url).href,
-    level: 4,
-    game_name: "Mgnonk...",
-    betting_amount: "$12.33",
-  },
-  {
-    image: new URL("@/assets/home/image/img_win_03.png", import.meta.url).href,
-    level: 5,
-    game_name: "Mgnonk...",
-    betting_amount: "$12.33",
-  },
-  {
-    image: new URL("@/assets/home/image/img_win_01.png", import.meta.url).href,
-    level: 6,
-    game_name: "Mgnonk...",
-    betting_amount: "$12.33",
-  },
-  {
-    image: new URL("@/assets/home/image/img_win_02.png", import.meta.url).href,
-    level: 1,
-    game_name: "Mgnonk...",
-    betting_amount: "$12.33",
-  },
-  {
-    image: new URL("@/assets/home/image/img_win_02.png", import.meta.url).href,
-    level: 1,
-    game_name: "Mgnonk...",
-    betting_amount: "$12.33",
-  },
-  {
-    image: new URL("@/assets/home/image/img_win_02.png", import.meta.url).href,
-    level: 1,
-    game_name: "Mgnonk...",
-    betting_amount: "$12.33",
-  },
-  {
-    image: new URL("@/assets/home/image/img_win_03.png", import.meta.url).href,
-    level: 2,
-    game_name: "Mgnonk...",
-    betting_amount: "$12.33",
-  },
-]);
 
 const gameBigWinItem = computed(() => {
   const { getGameBigWinItem } = storeToRefs(gameStore());
@@ -167,18 +100,13 @@ const goGame = (item: any) => {
 
 onMounted(async () => {
   await dispatchGameBigWin();
-  interval.value = setInterval(() => {
-    liveWinList.value.push(liveWinList.value[Math.floor(Math.random() * 8)]);
-  }, 60000);
 });
 
-// 在頁面銷毀之前先銷毀定時器
-onUnmounted(() => {
-  if (interval.value) {
-    clearInterval(interval.value);
-    interval.value = null;
-  }
-});
+const liveWinList = ()=>{
+  let res =[...gameBigWinItem.value.lucky_bets, ...gameBigWinItem.value.lucky_bets];
+  console.log(res.length);
+  return res;
+}
 </script>
 
 <template>
@@ -196,9 +124,10 @@ onUnmounted(() => {
     </div>
     <div class="live-win-body">
       <Swiper
-        :modules="modules"
+      :modules="modules"
         :slidesPerView="5"
         :spaceBetween="8"
+        :loop="true"
         :autoplay="{
           delay: 600,
           disableOnInteraction: false,
@@ -207,13 +136,13 @@ onUnmounted(() => {
         style="height: auto"
       >
         <SwiperSlide
-          v-for="(item, index) in gameBigWinItem.lucky_bets"
+          v-for="(item, index) in liveWinList()"
           :key="index"
           :virtualIndex="index"
           @click="goGame(item)"
         >
           <div class="text-center">
-            <img :src="imgWinList[Math.floor(Math.random() * 3)]" class="live-win-img" />
+            <img :src="item.game_icon" class="live-win-img" />
             <div class="live-win-level-text">
               <img :src="vipLevelGroups[item.user_vip_group]" width="12" />
               <p class="text-500-8 white ml-1">{{ item.user_name }}</p>
@@ -289,6 +218,8 @@ onUnmounted(() => {
   }
   .live-win-img {
     width: 95%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
     border-radius: 8px;
   }
   .live-win-level-text {

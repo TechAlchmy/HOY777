@@ -44,7 +44,7 @@ const Login = defineComponent({
     const { dispatchVipLevels } = vipStore();
     const { dispatchVipLevelAward } = vipStore();
     const { width } = useDisplay();
-    
+
     // initiate component state
     const state = reactive({
       currentPage: 0, // default login form
@@ -300,28 +300,29 @@ export default Login;
 
 <template>
   <div class="m-login-container">
-    <!-- <div class="m-login-container" :style="{ height: containerHeight + 'px' }"> -->
-    <LoginHeader v-if="currentPage === PAGE_TYPE.LOGIN_FORM" />
-    <div
-      class="m-login-body px-6"
-      :style="{
-        height:
-          currentPage == PAGE_TYPE.FORGOT_PASSWORD
-            ? containerHeight + 'px'
-            : bodyHeight + 'px',
-      }"
-    >
-      <!-- SIGN UP FORM  -->
+    <!-- <LoginHeader v-if="currentPage === PAGE_TYPE.LOGIN_FORM" /> -->
+    <div class="m-login-body px-6">
+      <div class="my-15 d-flex justify-center align-center">
+        <img src="@/assets/public/image/logo_public_01.png" width="86" />
+        <div class="ml-2">
+          <div class="text-800-16 white">
+            {{ t("signup.formPage.header.titleLine1") }}
+          </div>
+          <div class="text-900-20 white">
+            {{ t("signup.formPage.header.titleLine2") }}
+          </div>
+        </div>
+      </div>
       <v-form
         v-if="currentPage === PAGE_TYPE.LOGIN_FORM"
         ref="form"
-        class="full-width"
+        class="full-width relative"
         @keyup.enter="handleLoginFormSubmit"
       >
-        <v-row class="relative mt-8">
+        <div class="relative mt-8">
           <v-text-field
             :label="t('signup.formPage.emailAddress')"
-            class="form-textfield dark-textfield m-login-email"
+            class="form-textfield dark-textfield m-login-email mx-0"
             variant="solo"
             density="comfortable"
             v-model="formData.emailAddress"
@@ -329,41 +330,41 @@ export default Login;
             @input="handleEmailChange"
             :onfocus="handleEmailFocus"
           />
-        </v-row>
-        <div class="m-login-mail-card" :style="{ height: mailCardHeight + 'px' }">
-          <v-list theme="dark" bg-color="#15161C">
-            <v-list-item
-              class="text-600-12 white"
-              value="gmail"
-              @click="mergeEmail('@gmail.com')"
-            >
-              {{ emailPartName }}@gmail.com
-            </v-list-item>
-            <v-list-item
-              class="text-600-12 white"
-              value="hotmail"
-              @click="mergeEmail('@hotmail.com')"
-              >{{ emailPartName }}@hotmail.com</v-list-item
-            >
-            <v-list-item
-              class="text-600-12 white"
-              value="yahoo"
-              @click="mergeEmail('@yahoo.com')"
-              >{{ emailPartName }}@yahoo.com</v-list-item
-            >
-            <v-list-item
-              class="text-600-12 white"
-              value="icloud"
-              @click="mergeEmail('@icloud.com')"
-              >{{ emailPartName }}@icloud.com</v-list-item
-            >
-            <v-list-item
-              class="text-600-12 white"
-              value="outlook"
-              @click="mergeEmail('@outlook.com')"
-              >{{ emailPartName }}@outlook.com</v-list-item
-            >
-          </v-list>
+          <div class="m-login-mail-card" :style="{ height: mailCardHeight + 'px' }">
+            <v-list theme="dark" bg-color="#15161C">
+              <v-list-item
+                class="text-600-12 white"
+                value="gmail"
+                @click="mergeEmail('@gmail.com')"
+              >
+                {{ emailPartName }}@gmail.com
+              </v-list-item>
+              <v-list-item
+                class="text-600-12 white"
+                value="hotmail"
+                @click="mergeEmail('@hotmail.com')"
+                >{{ emailPartName }}@hotmail.com</v-list-item
+              >
+              <v-list-item
+                class="text-600-12 white"
+                value="yahoo"
+                @click="mergeEmail('@yahoo.com')"
+                >{{ emailPartName }}@yahoo.com</v-list-item
+              >
+              <v-list-item
+                class="text-600-12 white"
+                value="icloud"
+                @click="mergeEmail('@icloud.com')"
+                >{{ emailPartName }}@icloud.com</v-list-item
+              >
+              <v-list-item
+                class="text-600-12 white"
+                value="outlook"
+                @click="mergeEmail('@outlook.com')"
+                >{{ emailPartName }}@outlook.com</v-list-item
+              >
+            </v-list>
+          </div>
         </div>
         <div class="mt-6 relative pa-0">
           <v-text-field
@@ -389,7 +390,7 @@ export default Login;
             />
           </div>
         </div>
-        <v-row class="mt-1">
+        <v-row class="mt-2">
           <p
             class="ml-9 login-forget-passwrod-text text-400-12"
             @click="currentPage = PAGE_TYPE.FORGOT_PASSWORD"
@@ -397,7 +398,7 @@ export default Login;
             {{ t("login.formPage.forgetPassword") }}
           </p>
         </v-row>
-        <v-row style="margin-top: 116px">
+        <v-row style="margin-top: 100px">
           <v-btn
             class="ma-3 button-bright m-signin-btn-text"
             width="94%"
@@ -413,7 +414,7 @@ export default Login;
           <p class="m-divide-text">
             {{ t("signup.formPage.divider") }}
           </p>
-          <v-divider color="white" />
+          <v-divider class="mx-10" style="border: 1px solid #414968 !important" />
         </v-row>
         <v-row class="mt-6">
           <v-col cols="8" offset="2">
@@ -442,21 +443,6 @@ export default Login;
       </v-form>
       <!-- Forgot password -->
       <div v-if="currentPage == PAGE_TYPE.FORGOT_PASSWORD" class="full-width">
-        <v-row class="mt-10 d-flex justify-center">
-          <img src="@/assets/public/image/logo_public_01.png" width="182" />
-          <!-- <span class="logo-text purple text-large">{{ t('logo_text_1') }}</span>
-                    <span class="logo-text yellow text-large">{{ t('main.logo_text_2') }}</span> -->
-        </v-row>
-        <v-row class="mt-1 justify-center">
-          <!-- <p class="label-text-md2 white center full-width pl-12 pr-12">
-                        {{ t('login.forgotPasswordPage.title') }}
-                    </p> -->
-          <p class="m-logo-text2 center white">
-            {{ t("signup.formPage.header.titleLine1") }}
-            <br />
-            {{ t("signup.formPage.header.titleLine2") }}
-          </p>
-        </v-row>
         <v-row class="relative mt-8">
           <v-text-field
             :label="t('signup.formPage.emailAddress')"
@@ -504,7 +490,7 @@ export default Login;
             </v-list>
           </div>
         </v-row>
-        <v-row style="margin-top: 200px">
+        <v-row style="margin-top: 100px">
           <v-btn
             class="ma-3 button-bright m-signin-btn-text"
             width="94%"
@@ -515,11 +501,22 @@ export default Login;
             {{ t("login.forgotPasswordPage.submit") }}
           </v-btn>
         </v-row>
+        <v-row>
+          <v-btn
+            class="ma-3 m-forgot-back-btn"
+            width="94%"
+            height="48"
+            autocapitalize="off"
+            @click="currentPage = PAGE_TYPE.LOGIN_FORM"
+          >
+            {{ t("login.forgotPasswordPage.back_text") }}
+          </v-btn>
+        </v-row>
         <v-row class="mt-4">
           <p class="m-divide-text">
             {{ t("signup.formPage.divider") }}
           </p>
-          <v-divider color="white" />
+          <v-divider class="mx-10" style="border: 1px solid #414968 !important" />
         </v-row>
         <v-row class="mt-6">
           <v-col cols="8" offset="2">
@@ -569,13 +566,28 @@ export default Login;
 </template>
 
 <style lang="scss">
+.m-forgot-back-btn {
+  background: #23262f;
+  box-shadow: 0px 4px 6px 1px #0000004d;
+
+  .v-btn__content {
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 17px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: #ffffff;
+  }
+}
+
 .m-login-mail-card {
   position: absolute;
-  top: 86px;
+  top: 42px;
   left: 50%;
   transform: translateX(-50%);
-  background: #1D2027;
-  width: calc(100% - 48px);
+  background: #1d2027;
+  width: 100%;
   border-radius: 16px;
   z-index: 200;
   overflow: hidden;
@@ -587,7 +599,7 @@ export default Login;
   top: 55px;
   left: 50%;
   transform: translateX(-50%);
-  background: #1D2027;
+  background: #1d2027;
   width: calc(100% - 48px);
   border-radius: 16px;
   z-index: 200;
@@ -621,22 +633,15 @@ export default Login;
 .m-disable-password {
   position: absolute;
   top: 16px;
-  right: 24px;
+  right: 10px;
   cursor: pointer;
 }
 
-// button:active:enabled {
-//     transform: scale(0.95);
-//     filter: brightness(80%);
-// }
-
 // container
 .m-login-container {
-  height: 613px;
-  border-radius: 26px 26px 0px 0px;
-  position: fixed;
-  bottom: 0;
   width: 100%;
+  background: $color_1;
+  overflow-y: auto;
 
   .v-field--variant-solo {
     background: transparent !important;
@@ -645,14 +650,15 @@ export default Login;
 
 // wrapper
 .m-login-body {
-  border-radius: 8px 8px 0px 0px;
-  background: var(--bg-2-e-274-c, #1D2027);
-  position: absolute;
-  bottom: 0px;
-  width: 100%;
-  height: 473px;
-  z-index: 2000;
-  overflow-y: auto;
+  // border-radius: 8px 8px 0px 0px;
+  // background: var(--bg-2-e-274-c, #1d2027);
+  // position: absolute;
+  // bottom: 0px;
+  // width: 100%;
+  // height: 473px;
+  // z-index: 2000;
+  // overflow-y: auto;
+
   .form-textfield div.v-field__field {
     box-shadow: 2px 0px 4px 1px rgba(0, 0, 0, 0.12) inset !important;
   }
@@ -672,12 +678,12 @@ export default Login;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  color: #23262F;
+  color: #414968;
   position: relative;
   top: 12px;
   text-align: center;
   width: 120px;
-  background-color: #1D2027;
+  background-color: #1d2027;
   margin: auto;
   z-index: 1;
 }
@@ -697,7 +703,7 @@ export default Login;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  color: #23262F;
+  color: #23262f;
   position: relative;
   top: 12px;
   text-align: center;
@@ -709,7 +715,7 @@ export default Login;
 
 // social icon list component
 .social-icon-wrapper {
-  background-color: #1D2027 !important;
+  background-color: #1d2027 !important;
 
   .v-sheet {
     border-radius: 50px !important;
@@ -764,6 +770,10 @@ export default Login;
   transform-origin: top !important;
 
   .v-field__field {
+    input {
+      padding-right: 30px !important;
+    }
+
     .v-label.v-field-label {
       font-family: "Inter";
       font-size: 12px !important;

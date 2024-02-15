@@ -1,5 +1,14 @@
 <script lang="ts">
-import { defineComponent, ref, toRefs, reactive, computed, watch, onMounted, defineEmits } from "vue";
+import {
+  defineComponent,
+  ref,
+  toRefs,
+  reactive,
+  computed,
+  watch,
+  onMounted,
+  defineEmits,
+} from "vue";
 import { storeToRefs } from "pinia";
 import { refferalStore } from "@/store/refferal";
 import { useDisplay } from "vuetify";
@@ -13,6 +22,10 @@ import "swiper/css/navigation";
 import "swiper/css/virtual";
 // import Swiper core and required modules
 import { Pagination, Virtual, Autoplay, Navigation } from "swiper/modules";
+import { useRouter } from "vue-router";
+import { promoStore } from "@/store/promo";
+import { STATEMENT_TYPES } from "@babel/types";
+
 const BannerComponent = defineComponent({
   components: {
     Swiper,
@@ -22,12 +35,14 @@ const BannerComponent = defineComponent({
     Pagination,
     Navigation,
   },
-  setup(components, {emit}) {
+  setup(components, { emit }) {
     /**
      * 提取width属性
      * Extract width attribute
      */
     const { width } = useDisplay();
+    const router = useRouter();
+    const { dispatchUserActivityList } = promoStore();
     /**
      * 初始化swiper
      * Initialize swiper
@@ -39,11 +54,7 @@ const BannerComponent = defineComponent({
        * 初始化banner的值
        * Initialize the value of banner
        */
-      slides: [
-        new URL("@/assets/home/image/img_hp_01.png", import.meta.url).href,
-        new URL("@/assets/home/image/img_hp_02.png", import.meta.url).href,
-        new URL("@/assets/home/image/img_hp_03.png", import.meta.url).href,
-      ]
+      slides: [] as Array<string>,
     });
     /**
      * 获取swiper的属性
@@ -88,32 +99,62 @@ const BannerComponent = defineComponent({
       return getToken.value;
     });
 
-    onMounted(async ()=>{
+    onMounted(async () => {
       await dispatchBannerList();
-      
+
       const { getBannerList } = storeToRefs(bannerStore());
       state.slides.length = 0;
-      getBannerList.value.forEach(element => {
-        state.slides.push(new URL(element.image_path, import.meta.url).href);
+      getBannerList.value.forEach((element) => {
+        state.slides.push(element.image_path);
       });
-    })
-    const slideImageClick = (index:number) => {
+    });
+    const slideImageClick = async (index: number) => {
       const { getBannerList } = storeToRefs(bannerStore());
-      let type : number = getBannerList.value[index].click_feedback;
-      if(type == 5){
+      let type: number = getBannerList.value[index].click_feedback;
+      console.log(type);
+      if (type == 5) {
+        //window.location.href = getBannerList.value[index].content;.
+        const relocation_url = getBannerList.value[index].content;
+        const url_parts = relocation_url.split("?");
+        console.log(url_parts);
+        if (url_parts.length > 1) {
+          if (url_parts[0] == "/promo/detail") {
+            await dispatchUserActivityList();
+            const num = url_parts[1].split("=");
+            router.push({ name: "Promo_Detail", query: { id: parseInt(num[1]) } });
+          }
+        } else {
+          window.location.href = getBannerList.value[index].content;
+        }
+      }
+      if (type == 6) {
         window.location.href = getBannerList.value[index].content;
       }
-      if(type == 6){
-        window.location.href = getBannerList.value[index].content;
+      if (type == 7) {
+        emit("handleBannerCategory", getBannerList.value[index].content);
       }
-      if(type == 7){
-        emit('handleBannerCategory', getBannerList.value[index].content);
-      }
-      if(type == 8){
+      if (type == 8) {
         window.location.href = "game/" + getBannerList.value[index].content;
       }
+    };
+    const calcSlide = () => {
+      let res = [...state.slides, ...state.slides];
+      //let res = [...state.slides];
+      return res;
+    };
+    const handleSlideChange = (event: any) => {
+      let bullets = document.getElementsByClassName("swiper-pagination-bullet");
 
-    }
+      for (let i = 0; i < bullets.length; i++) {
+        if (i == event.activeIndex % state.slides.length)
+          bullets[event.activeIndex % state.slides.length].classList.add(
+            "swiper-pagination-bullet-active"
+          );
+        else {
+          bullets[i].classList.remove("swiper-pagination-bullet-active");
+        }
+      }
+    };
     return {
       ...toRefs(state),
       mobileWidth,
@@ -124,6 +165,8 @@ const BannerComponent = defineComponent({
       goToNext,
       slideImageClick,
       refferalAppBarShow,
+      calcSlide,
+      handleSlideChange,
     };
   },
 });
@@ -157,7 +200,6 @@ export default BannerComponent;
         <img
           :src="slide"
           class="slider-img-width"
-          
           :class="mobileWidth < 600 ? 'm-carousel-img-border' : ''"
         />
       </swiper-slide>
@@ -188,10 +230,15 @@ export default BannerComponent;
       :navigation="false"
       :virtual="true"
       class="mx-2"
-      style="border-radius: 8px; height: 195px"
+      style="border-radius: 8px"
       @swiper="getSwiperRef"
+      @slideChange="handleSlideChange"
     >
-      <swiper-slide v-for="(slide, index) in slides" :key="index" :virtualIndex="index">
+      <swiper-slide
+        v-for="(slide, index) in calcSlide()"
+        :key="index"
+        :virtualIndex="index"
+      >
         <img
           :src="slide"
           class="m-slider-img-width"
@@ -206,7 +253,7 @@ export default BannerComponent;
 
 <style lang="scss">
 .home-swiper {
-  // height: 247px;
+  //height: 247px;
 
   .swiper-pagination-bullet-active {
     width: 18px !important;
@@ -262,8 +309,7 @@ export default BannerComponent;
 }
 
 .m-home-swiper {
-  height: 208px;
-
+  height: fit-content !important;
   .swiper-pagination-bullet-active {
     width: 18px !important;
     height: 6px !important;
@@ -279,9 +325,15 @@ export default BannerComponent;
     opacity: 1;
     margin: 0 var(--swiper-pagination-bullet-horizontal-gap, 2px) !important;
   }
-
+  .swiper-pagination-bullet:not(:nth-child(-n + 3)) {
+    display: none !important;
+  }
   .swiper-pagination {
     bottom: -12px !important;
+  }
+
+  .m-slider-img-width {
+    height: fit-content !important;
   }
 }
 </style>

@@ -58,6 +58,11 @@ const mobileWidth = computed(() => {
   return width.value
 })
 
+const depositConfig = computed(() => {
+  const { getDepositCfg } = storeToRefs(depositStore());
+  return getDepositCfg.value
+})
+
 const handlePersonalInfoToggle = (): void => {
   personalInfoToggle.value = !personalInfoToggle.value;
   // setMainBlurEffectShow(personalInfoToggle.value == true? true : false);
@@ -287,7 +292,6 @@ onMounted(() => {
   <div
     class="mobile-cash-header"
     :class="depositHeaderBlurEffectShow ? 'm-deposit-header-bg-blur' : ''"
-    
   >
     <div
       class="d-flex align-center relative"
@@ -465,12 +469,12 @@ onMounted(() => {
 <style lang="scss">
 // header container
 .mobile-cash-header {
-  background-color:#1D2027;
+  background-color: #1d2027;
 
   .m-header {
     text-align: center;
     border-radius: 0px 0px 8px 8px;
-    background: #1D2027;
+    background: #1d2027;
     /* Button Shadow */
     box-shadow: 0px 4px 6px 1px rgba(0, 0, 0, 0.5);
     height: 60px;
@@ -479,7 +483,7 @@ onMounted(() => {
   .m-header-dropped {
     text-align: center;
     border-radius: 0px;
-    background: #1D2027;
+    background: #1d2027;
     /* Button Shadow */
     height: 60px;
   }
@@ -487,7 +491,7 @@ onMounted(() => {
   .m-deposit-header-btn {
     width: 70px !important;
     height: 60px !important;
-    background: #1D2027 !important;
+    background: #1d2027 !important;
     box-shadow: none !important;
     border: none !important;
     border-radius: 25px;
@@ -520,7 +524,7 @@ onMounted(() => {
       height: 40px;
       position: relative;
       display: block;
-      background: #15161C;
+      background: #15161c;
       border-radius: 20px !important;
       cursor: pointer;
       transition: 0.3s;
@@ -567,7 +571,7 @@ onMounted(() => {
       position: absolute;
       top: 2px;
       left: 2px;
-      background: #009B3A;
+      background: #009b3a;
       border-radius: 18px;
       box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
       transition: 0.3s;
@@ -603,7 +607,7 @@ onMounted(() => {
   }
 
   .dark-textfield .v-field__field {
-    background-color: #15161C !important;
+    background-color: #15161c !important;
   }
 
   .v-field--variant-solo {
@@ -616,7 +620,7 @@ onMounted(() => {
   width: 28px;
   height: 28px;
   border-radius: 48px;
-  background: #1D2027;
+  background: #1d2027;
 }
 
 .m-deposit-header-account-bg-1 {
@@ -628,7 +632,7 @@ onMounted(() => {
   height: 24px;
   flex-shrink: 0;
   border-radius: 38px;
-  background: #1D2027;
+  background: #1d2027;
   box-shadow: 0px 4px 6px 1px rgba(0, 0, 0, 0.5);
 }
 
@@ -636,7 +640,7 @@ onMounted(() => {
   text-align: center;
   width: 150px;
   border-radius: 8px;
-  background: #23262F;
+  background: #23262f;
 
   /* Button Shadow */
   box-shadow: 0px 3px 4px 1px rgba(0, 0, 0, 0.21);
@@ -675,19 +679,19 @@ onMounted(() => {
 
   .personal-info-key-position {
     position: absolute;
-    top: 70px;
+    top: 63px;
     right: 40px;
   }
 
   .personal-info-key-position-1 {
     position: absolute;
-    top: 132px;
+    top: 125px;
     left: 40%;
   }
 
   .personal-info-key-position-2 {
     position: absolute;
-    top: 132px;
+    top: 125px;
     right: 39px;
   }
 
@@ -779,7 +783,7 @@ onMounted(() => {
   }
 
   .personal-btn-ready {
-    background: #009B3A;
+    background: #009b3a;
     /* Button Shadow */
     box-shadow: 0px 3px 4px 1px rgba(0, 0, 0, 0.21);
 
@@ -788,6 +792,7 @@ onMounted(() => {
     }
   }
 }
+
 .deposit-header-account-position {
   position: absolute;
   left: 50%;

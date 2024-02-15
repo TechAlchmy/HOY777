@@ -34,14 +34,9 @@ import { authStore } from "@/store/auth";
 import type * as Game from "@/interface/game";
 import { storeToRefs } from "pinia";
 import { useRouter, useRoute } from "vue-router";
-import Search from "@/views/home/components/Search.vue";
-import MSearch from "@/views/home/components/mobile/Search.vue";
 import MGameConfirm from "@/views/home/components/mobile/GameConfirm.vue";
 import { ProgressiveImage } from "vue-progressive-image";
-import { useNamespace } from "element-plus";
-import { duration } from "moment-timezone";
-import { homeStore } from "@/store/home";
-import { toUpper } from "lodash-es";
+import { mainStore } from "@/store/main";
 
 const GameProviders = defineAsyncComponent(() => import("@/components/global/game_provider/index.vue"));
 
@@ -60,8 +55,6 @@ const Dashboard = defineComponent({
   },
   components: {
     GameProviders,
-    Search,
-    MSearch,
     MGameConfirm,
     ProgressiveImage,
   },
@@ -75,11 +68,12 @@ const Dashboard = defineComponent({
     const { dispatchUserGame } = gameStore();
     const { dispatchFavoriteGame } = gameStore();
     const { setOriginalGames } = gameStore();
+    const { setFavoriteGameList } = gameStore();
     const { setMailMenuShow } = mailStore();
     const { setNavBarToggle } = appBarStore();
     const { setMainBlurEffectShow } = appBarStore();
     const { dispatchSocketConnect } = socketStore();
-    const { setSearchDialogShow } = homeStore();
+    const { setSearchDialogShow } = mainStore();
     const router = useRouter();
     const route = useRoute();
     const instance = getCurrentInstance();
@@ -175,7 +169,6 @@ const Dashboard = defineComponent({
     });
 
     const selectedGameFilterBtn = ref<any>(t("home.button.all_game"));
-    const searchDialogShow = ref<boolean>(false);
     const gameConfirmDialogShow = ref<boolean>(false);
     const filterTabText = ref<string>("lobby");
     const gameGroupBtnList = ref<Array<any>>([]);
@@ -244,20 +237,8 @@ const Dashboard = defineComponent({
 
     const favoriteGameList = computed(() => {
       const { getFavoriteGameList } = storeToRefs(gameStore());
+      console.log("11111111111111", getFavoriteGameList.value);
       return getFavoriteGameList.value
-    })
-
-    const searchDialogToggle = computed(() => {
-      const { getSearchDialogShow } = storeToRefs(homeStore());
-      return getSearchDialogShow.value
-    })
-
-    watch(searchDialogToggle, (value) => {
-      searchDialogShow.value = value;
-    })
-
-    watch(searchDialogShow, (value) => {
-      setSearchDialogShow(value);
     })
 
     const mobileVersion = computed(() => {
@@ -311,10 +292,6 @@ const Dashboard = defineComponent({
         state.signupDialog = false;
         state.mobileDialog = false;
       }
-    });
-
-    watch(searchGameDialogShow, (value: any) => {
-      searchDialogShow.value = false;
     });
 
     const gameTransform1 = (el: any) => {
@@ -601,6 +578,24 @@ const Dashboard = defineComponent({
       gameFilterBtnFlag.value = false;
     };
 
+    watch(selectedGameFilterBtn, ()=>{
+      const element = document.getElementsByClassName('filter-btn-container'); // Replace 'your-element-id' with the actual ID of your element
+      if(element != undefined){
+        let curPos = element[0].scrollLeft;
+        let index = gameGroupBtnList.value.findIndex(item => item.slug == selectedGameFilterBtn.value);
+        index = index + 1;
+        let left = 0;
+        let right = 116.48;
+        if(index > 0){
+          left = 116.48 + 148 * (index - 1);
+          right = left + 148;
+        }
+        const width = element[0].offsetWidth;
+        if(!(left > curPos && left < curPos + width)){
+          element[0].scrollLeft = 116.48 + (index - 1) * 148;
+        }
+      }
+    })
     const handleMoreGame = async (
       slug: string,
       page_no: number,
@@ -686,22 +681,21 @@ const Dashboard = defineComponent({
     }
 
     const handleSearchInputFocus = () => {
-      searchDialogShow.value = true;
+      setSearchDialogShow(true);
     };
 
-    const showGameConfirmationDialog = (game_item: Game.GameItem) => {
+    const showGameConfirmationDialog = async (game_item: Game.GameItem) => {
+      setFavoriteGameList([]);
+      await dispatchGameFavoriteList();
       state.is_favorite = favoriteGameList.value.some(item => item == game_item.id);
+      console.log(favoriteGameList.value);
       console.log(state.is_favorite);
       gameConfirmDialogShow.value = true;
       selectedGameItem.value = game_item;
     }
 
-    watch(searchDialogShow, (value: boolean) => {
-      setMailMenuShow(value);
-    });
-
     watch(gameConfirmDialogShow, (value: boolean) => {
-      setMailMenuShow(value);
+      // setMailMenuShow(value);
     })
 
     watch(gameFilterText, async (value: any) => {
@@ -799,19 +793,114 @@ const Dashboard = defineComponent({
       }
     });
 
-    // 活動測試
-    // const comUserActivityList = () => {
-    //   const { getUserActivityList } = storeToRefs(gameStore());
-    //   console.log('這裏呀', getUserActivityList.value.group_data)
-    //   if (getUserActivityList.value?.group_data) {
-    //     return getUserActivityList.value.group_data
-    //   }
-    //   return []
-    // }
-
     const handleBannerCategory = (category: string) => {
       handleGameFilterBtn(category.toUpperCase());
     }
+
+    watch(route, (to) => {
+      selectedGameFilterBtn.value = route.query.filter ? route.query.filter : t("home.button.all_game");
+      switch (selectedGameFilterBtn.value) {
+        case t("home.button.all_game"):
+          gameFilterIconColor1.value = "#FFFFFF";
+          gameFilterIconColor2.value = "#7782AA";
+          gameFilterIconColor3.value = "#7782AA";
+          gameFilterIconColor4.value = "#7782AA";
+          gameFilterIconColor5.value = "#7782AA";
+          gameFilterIconColor6.value = "#7782AA";
+          gameFilterIconColor7.value = "#7782AA";
+          filterTabText.value = "lobby";
+          break;
+        case "favorite":
+          gameFilterIconColor1.value = "#7782AA";
+          gameFilterIconColor2.value = "#FFFFFF";
+          gameFilterIconColor3.value = "#7782AA";
+          gameFilterIconColor4.value = "#7782AA";
+          gameFilterIconColor5.value = "#7782AA";
+          gameFilterIconColor6.value = "#7782AA";
+          gameFilterIconColor7.value = "#7782AA";
+          filterTabText.value = "paging";
+          selectedCategoryName.value = "favorite";
+          break;
+        case "history":
+          gameFilterIconColor1.value = "#7782AA";
+          gameFilterIconColor2.value = "#7782AA";
+          gameFilterIconColor3.value = "#FFFFFF";
+          gameFilterIconColor4.value = "#7782AA";
+          gameFilterIconColor5.value = "#7782AA";
+          gameFilterIconColor6.value = "#7782AA";
+          gameFilterIconColor7.value = "#7782AA";
+          filterTabText.value = "paging";
+          selectedCategoryName.value = "history";
+          break;
+        case "original":
+          gameFilterIconColor1.value = "#7782AA";
+          gameFilterIconColor2.value = "#7782AA";
+          gameFilterIconColor3.value = "#7782AA";
+          gameFilterIconColor4.value = "#FFFFFF";
+          gameFilterIconColor5.value = "#7782AA";
+          gameFilterIconColor6.value = "#7782AA";
+          gameFilterIconColor7.value = "#7782AA";
+          filterTabText.value = "paging";
+          selectedCategoryName.value = "original";
+          break;
+        case "PGSOFT":
+          gameFilterIconColor1.value = "#7782AA";
+          gameFilterIconColor2.value = "#7782AA";
+          gameFilterIconColor3.value = "#7782AA";
+          gameFilterIconColor4.value = "#7782AA";
+          gameFilterIconColor5.value = "#FFFFFF";
+          gameFilterIconColor6.value = "#7782AA";
+          gameFilterIconColor7.value = "#7782AA";
+          filterTabText.value = "paging";
+          selectedCategoryName.value = "PGSOFT";
+          break;
+        case "Evoplay":
+          gameFilterIconColor1.value = "#7782AA";
+          gameFilterIconColor2.value = "#7782AA";
+          gameFilterIconColor3.value = "#7782AA";
+          gameFilterIconColor4.value = "#7782AA";
+          gameFilterIconColor5.value = "#FFFFFF";
+          gameFilterIconColor6.value = "#7782AA";
+          gameFilterIconColor7.value = "#7782AA";
+          filterTabText.value = "paging";
+          selectedCategoryName.value = "Evoplay";
+          break;
+        case "Bgaming":
+          gameFilterIconColor1.value = "#7782AA";
+          gameFilterIconColor2.value = "#7782AA";
+          gameFilterIconColor3.value = "#7782AA";
+          gameFilterIconColor4.value = "#7782AA";
+          gameFilterIconColor5.value = "#FFFFFF";
+          gameFilterIconColor6.value = "#7782AA";
+          gameFilterIconColor7.value = "#7782AA";
+          filterTabText.value = "paging";
+          selectedCategoryName.value = "Bgaming";
+          break;
+        case "slot":
+          gameFilterIconColor1.value = "#7782AA";
+          gameFilterIconColor2.value = "#7782AA";
+          gameFilterIconColor3.value = "#7782AA";
+          gameFilterIconColor4.value = "#7782AA";
+          gameFilterIconColor5.value = "#7782AA";
+          gameFilterIconColor6.value = "#FFFFFF";
+          gameFilterIconColor7.value = "#7782AA";
+          filterTabText.value = "paging";
+          selectedCategoryName.value = "slot";
+          break;
+        case "live":
+          gameFilterIconColor1.value = "#7782AA";
+          gameFilterIconColor2.value = "#7782AA";
+          gameFilterIconColor3.value = "#7782AA";
+          gameFilterIconColor4.value = "#7782AA";
+          gameFilterIconColor5.value = "#7782AA";
+          gameFilterIconColor6.value = "#7782AA";
+          gameFilterIconColor7.value = "#FFFFFF";
+          filterTabText.value = "paging";
+          selectedCategoryName.value = "live";
+          break;
+      }
+    }, { flush: 'pre', immediate: true, deep: true })
+
     onMounted(async () => {
       loading.value = true;
       window.scrollTo({
@@ -894,8 +983,6 @@ const Dashboard = defineComponent({
       });
 
       pagingGames.value = gameCategories.value;
-
-      await dispatchGameFavoriteList();
 
       console.log("favoritegameList: ", favoriteGameList.value);
 
@@ -994,6 +1081,28 @@ const Dashboard = defineComponent({
           filterTabText.value = "paging";
           selectedCategoryName.value = "original";
           break;
+        case "Evoplay":
+          gameFilterIconColor1.value = "#7782AA";
+          gameFilterIconColor2.value = "#7782AA";
+          gameFilterIconColor3.value = "#7782AA";
+          gameFilterIconColor4.value = "#7782AA";
+          gameFilterIconColor5.value = "#FFFFFF";
+          gameFilterIconColor6.value = "#7782AA";
+          gameFilterIconColor7.value = "#7782AA";
+          filterTabText.value = "paging";
+          selectedCategoryName.value = "Evoplay";
+          break;
+        case "Bgaming":
+          gameFilterIconColor1.value = "#7782AA";
+          gameFilterIconColor2.value = "#7782AA";
+          gameFilterIconColor3.value = "#7782AA";
+          gameFilterIconColor4.value = "#7782AA";
+          gameFilterIconColor5.value = "#FFFFFF";
+          gameFilterIconColor6.value = "#7782AA";
+          gameFilterIconColor7.value = "#7782AA";
+          filterTabText.value = "paging";
+          selectedCategoryName.value = "Bgaming";
+          break;
         case "PGSOFT":
           gameFilterIconColor1.value = "#7782AA";
           gameFilterIconColor2.value = "#7782AA";
@@ -1062,7 +1171,6 @@ const Dashboard = defineComponent({
       handleMoreGame,
       handleSearchInputFocus,
       showGameConfirmationDialog,
-      searchDialogShow,
       selectedCategoryName,
       favoriteIconTransform,
       addFavoriteGame,
@@ -1117,32 +1225,6 @@ export default Dashboard;
     "
     v-else
   >
-    <!-- <div style="width: 100%; height: 200px;">
-      <div v-html="comUserActivityList()[0]?.list_data[0]?.content"></div>
-    </div> -->
-
-    <!-- game search -->
-    <v-navigation-drawer
-      v-model="searchDialogShow"
-      location="top"
-      class="m-search-bar"
-      temporary
-      :touchless="true"
-      :style="{
-        // height: 'unset',
-        height: '100%',
-        top: '0px',
-        zIndex: 300000,
-        background: 'unset !important',
-      }"
-      v-if="mobileWidth < 600"
-    >
-      <MSearch
-        :searchDialogShow="searchDialogShow"
-        @searchCancel="searchDialogShow = false"
-      />
-    </v-navigation-drawer>
-
     <!-- game confirmation dialog -->
 
     <v-navigation-drawer
@@ -1171,12 +1253,13 @@ export default Dashboard;
       <MGameConfirm
         :selectedGameItem="selectedGameItem"
         :is_favorite="is_favorite"
+        :gameConfirmDialogShow="gameConfirmDialogShow"
         @closeGameConfirmDialog="gameConfirmDialogShow = false"
         @refreshGameFavoriteList="refreshGameFavoriteList"
       />
     </v-navigation-drawer>
 
-    <div :class="searchDialogShow || gameConfirmDialogShow ? 'home-bg-blur' : ''">
+    <div :class="gameConfirmDialogShow ? 'home-bg-blur' : ''">
       <!-- 这里是banner -->
       <component
         :is="bannerComponent"
@@ -1184,7 +1267,7 @@ export default Dashboard;
       ></component>
 
       <!-- input for search -->
-      <v-row class="mt-0 home-search-bar" :class="mobileWidth < 600 ? 'px-1' : 'px-4'">
+      <v-row class="mt-4 home-search-bar" :class="mobileWidth < 600 ? 'px-1' : 'px-4'">
         <v-text-field
           :placeholder="t('home.search')"
           class="form-textfield dark-textfield"
@@ -1312,20 +1395,8 @@ export default Dashboard;
           </v-slide-group>
         </template>
         <template v-else>
-          <v-slide-group
-            v-model="selectedGameFilterBtn"
-            class="mt-4 mb-0"
-            :transition="customTransition"
-            :touch="{ velocity: 0.3 }"
-            style="
-              margin-left: 0px !important;
-              margin-right: 0px !important;
-              background: none !important;
-            "
-          >
-            <v-slide-group-item>
-              <!-- width="112" -->
-              <v-btn
+          <div style="overflow:auto; color:white" class="filter-btn-container mt-4 mb-0 d-flex">
+            <v-btn
                 class="mr-3 text-none"
                 height="36"
                 :class="
@@ -1344,9 +1415,8 @@ export default Dashboard;
                 >
                 </inline-svg>
                 {{ t("home.button.all_game") }}
-              </v-btn>
-            </v-slide-group-item>
-            <v-slide-group-item
+            </v-btn>
+            <div
               v-for="(item, index) in gameGroupBtnList"
               :key="index"
               :value="item.slug"
@@ -1412,8 +1482,8 @@ export default Dashboard;
                 ></inline-svg>
                 {{ item.name }}
               </v-btn>
-            </v-slide-group-item>
-          </v-slide-group>
+            </div>
+          </div>
         </template>
       </v-row>
 
@@ -1804,6 +1874,12 @@ export default Dashboard;
   }
 }
 
+.m-game-confirm-bar {
+  .v-navigation-drawer__content {
+    height: 100%;
+  }
+}
+
 .v-progressive-image-main {
   width: 100%;
   height: 100%;
@@ -1892,7 +1968,7 @@ export default Dashboard;
 
 .m-home-favorite-icon {
   position: absolute;
-  top: 13px;
+  top: 7px;
   right: 2px;
   width: 24px;
   height: 24px;
@@ -1967,7 +2043,7 @@ export default Dashboard;
     // }
 
     .v-progressive-image {
-      border-radius: 8px 32px;
+      border-radius: 8px 8px !important;
     }
   }
 
@@ -2364,6 +2440,7 @@ export default Dashboard;
     background-color: #1d2027;
     border-radius: 8px;
   }
+
   .v-field__field {
     background-color: #1d2027 !important;
   }
@@ -2375,5 +2452,14 @@ export default Dashboard;
 
 .m-game-confirm-bar {
   box-shadow: none !important;
+}
+.filter-btn-container{
+  overscroll-behavior: auto !important;
+  touch-action: manipulation;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.filter-btn-container::-webkit-scrollbar{
+  display: none;
 }
 </style>

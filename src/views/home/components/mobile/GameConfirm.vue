@@ -16,9 +16,9 @@ const router = useRouter();
 
 const emit = defineEmits<{ (e: "closeGameConfirmDialog"): void, (e: "refreshGameFavoriteList", id: number | string): void }>();
 
-const props = defineProps<{ selectedGameItem: GameItem, is_favorite: boolean }>();
+const props = defineProps<{ selectedGameItem: GameItem, is_favorite: boolean, gameConfirmDialogShow: boolean }>();
 
-const { selectedGameItem, is_favorite } = toRefs(props);
+const { selectedGameItem, is_favorite, gameConfirmDialogShow } = toRefs(props);
 
 const { dispatchFavoriteGame } = gameStore();
 const { setAuthModalType } = authStore();
@@ -93,8 +93,9 @@ const handleEnterGame = async (id: number, name: string, is_demo: string) => {
   }
 };
 
-watch(is_favorite, (value) => {
-  favoriteSvgIconColor.value = value ? "#F9BC01" : "#7782AA";
+watch(gameConfirmDialogShow, (value) => {
+  console.log("favorite:::::::::::::::::", is_favorite.value)
+  favoriteSvgIconColor.value = is_favorite.value ? "#F9BC01" : "#7782AA";
 })
 </script>
 
@@ -112,13 +113,13 @@ watch(is_favorite, (value) => {
         <div class="text-700-14 white mt-2">{{ selectedGameItem.name }}</div>
         <div class="text-400-12 gray mt-1">by {{ selectedGameItem.provider }}</div>
       </v-col>
-      <v-col cols="3" class="px-2 mt-2 d-flex">
+      <v-col cols="3" class="px-2 mt-2 d-flex justify-end">
         <inline-svg
           :src="icon_public_36"
           :transform-source="svgIconTransform"
           @click="addFavoriteGame(selectedGameItem.id)"
         ></inline-svg>
-        <inline-svg :src="icon_public_103" style="margin-left: auto"></inline-svg>
+        <!-- <inline-svg :src="icon_public_103" style="margin-left: auto"></inline-svg> -->
       </v-col>
     </v-row>
     <v-row class="mx-8 pb-4 align-center" v-if="selectedGameItem.is_demo">
@@ -162,7 +163,7 @@ watch(is_favorite, (value) => {
   .m-game-confirm-img {
     object-fit: cover;
     aspect-ratio: 0.74152;
-    border-radius: 8px 32px;
+    border-radius: 8px 8px;
   }
 
   .m-game-confirm-real-more-btn {

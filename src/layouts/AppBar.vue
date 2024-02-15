@@ -14,7 +14,7 @@ import { mailStore } from "@/store/mail";
 import { storeToRefs } from "pinia";
 import { type GetUserData } from "@/interface/appBar";
 import { type GetMailData } from '@/interface/mail';
-import { type GetCurrencyItem } from '@/interface/deposit';
+import { type GetCurrencyBalanceList } from '@/interface/currency';
 import { useToast } from "vue-toastification";
 import * as clipboard from "clipboard-polyfill";
 import { useDisplay } from 'vuetify'
@@ -29,7 +29,10 @@ import img_vipemblem_100_149 from "@/assets/vip/image/img_vipemblem_100-149.png"
 import img_vipemblem_159_199 from "@/assets/vip/image/img_vipemblem_159-199.png";
 import img_vipemblem_200 from "@/assets/vip/image/img_vipemblem_200.png";
 
+import { currencyStore } from "@/store/currency";
+
 const { setAuthModalType } = authStore();
+const { setAuthDialogVisible } = authStore();
 const { dispatchUserProfile } = authStore();
 const { setRightBarToggle } = appBarStore();
 const { setNavBarToggle } = appBarStore();
@@ -45,10 +48,11 @@ const { setTransactionTab } = bonusTransactionStore();
 const { setRefferalDialogShow } = refferalStore();
 const { setLoginBonusDialogVisible } = loginBonusStore();
 const { setMailMenuShow } = mailStore();
-const { dispatchUserBalance } = userStore();
+const { dispatchUserBalance, dispatchSetUserCurrency } = userStore();
 const { dispatchSocketConnect } = socketStore();
 const { setDepositWithdrawToggle } = appBarStore();
 const { setBonusDashboardDialogVisible } = appBarStore();
+const { dispatchCurrencyList } = currencyStore();
 
 const { name, width } = useDisplay()
 const router = useRouter();
@@ -68,7 +72,7 @@ const user = ref<GetUserData>({
   name: "Little Planes",
   grade_level: "Bronze",
   grade: "VIP 4",
-  wallet: "R$515.25",
+  wallet: "R$0",
   currency: "R$",
 });
 
@@ -260,6 +264,7 @@ const toggleLanguage = () => {
 
 const openDialog = (type: dialogType) => {
   setAuthModalType(type);
+  setAuthDialogVisible(true);
   setOverlayScrimShow(false);
 };
 
@@ -282,55 +287,93 @@ const withdrawDialogShow = () => {
 
 const userNavBarToggle = ref(false);
 
-const selectedCurrencyItem = ref<GetCurrencyItem>({
-  icon: new URL("@/assets/public/svg/icon_public_84.svg", import.meta.url).href,
-  name: "BRL",
-  value: 515.25
+const selectedCurrencyItem = ref<GetCurrencyBalanceList>({
+  //icon: new URL("@/assets/public/svg/icon_public_84.svg", import.meta.url).href,
+  currency: "BRL",
+  amount: "0",
+  availabe_balance: "",
+  real: "",
+  bonus: "",
 })
 
-const currencyList = ref<Array<GetCurrencyItem>>([
+const currencyImages: Array<any> = ([
   {
     icon: new URL("@/assets/public/svg/icon_public_84.svg", import.meta.url).href,
     name: "BRL",
-    value: 515.25
   },
   {
     icon: new URL("@/assets/public/svg/icon_public_85.svg", import.meta.url).href,
     name: "PHP",
-    value: 0
   },
   {
     icon: new URL("@/assets/public/svg/icon_public_86.svg", import.meta.url).href,
     name: "PEN",
-    value: 0
   },
   {
     icon: new URL("@/assets/public/svg/icon_public_87.svg", import.meta.url).href,
     name: "MXN",
-    value: 0
   },
   {
     icon: new URL("@/assets/public/svg/icon_public_88.svg", import.meta.url).href,
     name: "CLP",
-    value: 0
   },
   {
     icon: new URL("@/assets/public/svg/icon_public_89.svg", import.meta.url).href,
     name: "USD",
-    value: 0
   },
   {
     icon: new URL("@/assets/public/svg/icon_public_90.svg", import.meta.url).href,
     name: "COP",
-    value: 0
+  },
+  {
+    icon: new URL("@/assets/public/svg/icon_public_91.svg", import.meta.url).href,
+    name: "EUR",
   },
 ])
+const imageIndex = ref<Array<number>>([]);
+const currencyList = computed(() => {
+  const { getCurrencyList } = storeToRefs(currencyStore());
+  return getCurrencyList.value
+})
 
-const handleSelectCurrency = (item: GetCurrencyItem) => {
+watch(currencyList, (() => {
+  imageIndex.value.length = 0;
+  currencyList.value.forEach(currency => {
+    imageIndex.value.push(currencyImages.findIndex(item => item.name == currency.currency) != -1 ? currencyImages.findIndex(item => item.name == currency.currency) : 0);
+  });
+}))
+
+const handleSelectCurrency = async (item: GetCurrencyBalanceList) => {
   selectedCurrencyItem.value = item;
-  user.value.currency = item.name
-  const currencyUnit = item.name
+
+  await dispatchSetUserCurrency(item.currency);
+  await dispatchUserBalance();
+
+  setTimeout(() => {
+    setOverlayScrimShow(false);
+    setMainBlurEffectShow(false);
+    setMailMenuShow(false);
+  }, 300)
+}
+
+const handleCurrencyMenuShow = () => {
+  currencyMenuShow.value = !currencyMenuShow.value;
+}
+
+const showUserNavBar = (): void => {
+  userNavBarToggle.value = !userNavBarToggle.value
+  setNavBarToggle(false)
+  setBonusDashboardDialogVisible(false);
+  setMainBlurEffectShow(false);
+  // setTimeout(() => {
+  setUserNavBarToggle(userNavBarToggle.value);
+  setMainBlurEffectShow(userNavBarToggle.value);
+  // }, 10)
+}
+
+watch(userBalance, (value) => {
   let locale = 'pt-BR';
+  const currencyUnit = value.currency
   switch (currencyUnit) {
     case "BRL":
       locale = 'pt-BR';
@@ -353,39 +396,14 @@ const handleSelectCurrency = (item: GetCurrencyItem) => {
       locale = 'es-CO';
       break;
   }
-  user.value.wallet = formatCurrency(Number(item.value), locale, currencyUnit);
-  setTimeout(() => {
-    setOverlayScrimShow(false);
-    setMainBlurEffectShow(false);
-    setMailMenuShow(false);
-  }, 300)
-}
-
-const handleCurrencyMenuShow = () => {
-  currencyMenuShow.value = !currencyMenuShow.value;
-}
-
-const showUserNavBar = (): void => {
-  userNavBarToggle.value = !userNavBarToggle.value
-  setNavBarToggle(false)
-  setBonusDashboardDialogVisible(false);
-  setMainBlurEffectShow(false);
-  setTimeout(() => {
-    setUserNavBarToggle(userNavBarToggle.value);
-    setMainBlurEffectShow(userNavBarToggle.value);
-  }, 10)
-}
-
-watch(userBalance, (value) => {
-  const locale = 'pt-BR';
-  const currencyUnit = "BRL"
   user.value.wallet = formatCurrency(Number(value.amount), locale, currencyUnit);
   user.value.currency = value.currency
-  currencyList.value.map(item => {
+  selectedCurrencyItem.value.currency = value.currency
+  /*currencyList.value.map(item => {
     if (item.name == "BRL") {
       item.value = Number(value.amount)
     }
-  })
+  })*/
 })
 
 watch(socketBalance, (value) => {
@@ -393,6 +411,11 @@ watch(socketBalance, (value) => {
   const currencyUnit = "BRL";
   user.value.wallet = formatCurrency(Number(value.bal), locale, currencyUnit);
   user.value.currency = value.cur
+  currencyList.value.map(item => {
+    if (item.name == "BRL") {
+      item.value = Number(value.bal)
+    }
+  })
 })
 
 watch(userNavToggle, (newValue) => {
@@ -497,6 +520,7 @@ onMounted(async () => {
   if (token.value != undefined) {
     await dispatchUserProfile();
     await dispatchUserBalance();
+    await dispatchCurrencyList();
     // await dispatchSocketConnect();
   }
 });
@@ -517,7 +541,7 @@ onMounted(async () => {
       @click.stop="setNavBarToggle(true)"
       v-if="!navBarToggle && mobileWidth > 600"
     ></v-app-bar-nav-icon>
-    
+
     <v-toolbar-title v-if="mobileWidth > 800">
       <img
         src="@/assets/public/image/logo_public_01.png"
@@ -528,7 +552,7 @@ onMounted(async () => {
         <img src="@/assets/public/image/logo_public_01.png" />
       </v-btn> -->
     </v-toolbar-title>
-    
+
     <v-toolbar-title v-else>
       <img
         src="@/assets/public/image/logo_public_03.png"
@@ -572,25 +596,25 @@ onMounted(async () => {
                     <v-list theme="dark" bg-color="#1D2027" class="px-2" width="427px">
                       <v-list-item
                         class="currency-item pl-6"
-                        :value="currencyItem.name"
+                        :value="currencyItem.currency"
                         v-for="(currencyItem, currencyIndex) in currencyList"
                         :key="currencyIndex"
                         :class="
-                          selectedCurrencyItem.name == currencyItem.name
+                          selectedCurrencyItem.currency == currencyItem.currency
                             ? 'currency-selected-item'
                             : ''
                         "
                         @click="handleSelectCurrency(currencyItem)"
                       >
                         <template v-slot:prepend>
-                          <img :src="currencyItem.icon" width="24" />
+                          <img width="24" />
                         </template>
                         <v-list-item-title class="ml-2 text-700-14">{{
-                          currencyItem.name
+                          currencyItem.currency
                         }}</v-list-item-title>
                         <template v-slot:append>
                           <p class="text-700-14 white">
-                            $ {{ currencyItem.value.toFixed(2) }}
+                            $ {{ parseFloat(currencyItem.amount).toFixed(2) }}
                           </p>
                         </template>
                       </v-list-item>
@@ -651,9 +675,9 @@ onMounted(async () => {
                     >
                       <v-list-item
                         class="currency-item pl-6"
-                        :value="currencyItem.name"
+                        :value="currencyItem.currency"
                         :class="
-                          selectedCurrencyItem.name == currencyItem.name
+                          selectedCurrencyItem.currency == currencyItem.currency
                             ? 'currency-selected-item'
                             : ''
                         "
@@ -662,14 +686,17 @@ onMounted(async () => {
                         @click="handleSelectCurrency(currencyItem)"
                       >
                         <template v-slot:prepend>
-                          <img :src="currencyItem.icon" width="20" />
+                          <img
+                            width="20"
+                            :src="currencyImages[imageIndex[currencyIndex]].icon"
+                          />
                         </template>
                         <v-list-item-title class="ml-2 text-700-10">{{
-                          currencyItem.name
+                          currencyItem.currency
                         }}</v-list-item-title>
                         <template v-slot:append>
                           <p class="text-700-10 white">
-                            $ {{ currencyItem.value.toFixed(2) }}
+                            $ {{ parseFloat(currencyItem.amount).toFixed(2) }}
                           </p>
                         </template>
                       </v-list-item>
@@ -1123,8 +1150,8 @@ onMounted(async () => {
 
 <style lang="scss">
 .currency-selected-item {
-  border: 1px solid #00b25c;
-  border-radius: 14px;
+  border: 1px solid #00b25c !important;
+  border-radius: 14px !important;
 }
 
 .m-currency-menu {
@@ -1143,7 +1170,7 @@ onMounted(async () => {
     align-self: center;
     top: -25px;
     right: 150px;
-    border: 13px solid #1D2027;
+    border: 13px solid #1d2027;
     border-right-color: transparent;
     border-left-color: transparent;
     border-top-color: transparent;
@@ -1159,7 +1186,7 @@ onMounted(async () => {
     align-self: center;
     top: -25px;
     left: 60px;
-    border: 13px solid #1D2027;
+    border: 13px solid #1d2027;
     border-right-color: transparent;
     border-left-color: transparent;
     border-top-color: transparent;
@@ -1304,14 +1331,14 @@ onMounted(async () => {
   width: 120px;
   height: 48px !important;
   border-radius: 8px !important;
-  background-color: #009B3A !important;
+  background-color: #009b3a !important;
 }
 
 .app-bar-signup-btn-mobile {
   width: 91px;
   height: 40px !important;
-  border-radius: 8px;
-  background: #009B3A;
+  border-radius: 8px !important;
+  background: #009b3a !important;
   //border: 1px solid #8664f7;
   //background: linear-gradient(0deg, #5524fd 0%, #6d44f7 100%);
 
@@ -1392,7 +1419,7 @@ onMounted(async () => {
     align-self: center;
     top: -25px;
     right: 68px;
-    border: 13px solid #1D2027;
+    border: 13px solid #1d2027;
     border-right-color: transparent;
     border-left-color: transparent;
     border-top-color: transparent;
@@ -1416,7 +1443,7 @@ onMounted(async () => {
     align-self: center;
     right: 66px;
     top: -18px;
-    border: 9px solid #1D2027;
+    border: 9px solid #1d2027;
     border-right-color: transparent;
     border-left-color: transparent;
     border-top-color: transparent;
@@ -1473,7 +1500,7 @@ onMounted(async () => {
 
   .mail-item {
     margin-top: 4px !important;
-    background-color: #15161C !important;
+    background-color: #15161c !important;
     padding: 4px 8px !important;
     border-radius: 8px !important;
   }
@@ -1505,7 +1532,7 @@ onMounted(async () => {
   position: absolute;
   right: 9px;
   top: 23px;
-  background: #1D2027;
+  background: #1d2027;
   border-radius: 20px;
   padding: 2px 12px;
   font-weight: 500;
@@ -1526,7 +1553,7 @@ onMounted(async () => {
   position: absolute;
   right: 13px;
   top: 22px;
-  background: #1D2027;
+  background: #1d2027;
   border-radius: 20px;
   padding: 2px 21px;
   font-weight: 500;
@@ -1535,7 +1562,7 @@ onMounted(async () => {
 
 .sign-out-btn {
   cursor: pointer;
-  background: #23262F;
+  background: #23262f;
   border-radius: 8px;
   padding: 13px;
   margin: 0px 20px;
@@ -1557,7 +1584,7 @@ onMounted(async () => {
 
 .deposit-progress-bg {
   .v-progress-linear {
-    background: #15161C !important;
+    background: #15161c !important;
     box-shadow: inset 2px 0px 4px 1px rgba(0, 0, 0, 0.12) !important;
     border-radius: 20px !important;
   }
@@ -1581,7 +1608,7 @@ onMounted(async () => {
   border-radius: 8px;
   //border: 1px solid #8664f7;
   //background: linear-gradient(0deg, #5524fd 0%, #6d44f7 100%);
-  background: #009B3A;
+  background: #009b3a;
 }
 
 .deposit-text-position {

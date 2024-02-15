@@ -6,9 +6,42 @@ import icon_public_42 from "@/assets/public/svg/icon_public_42.svg";
 import icon_public_93 from "@/assets/public/svg/icon_public_93.svg";
 import { useRouter } from "vue-router";
 import { promoStore } from "@/store/promo";
+import { appBarStore } from "@/store/appBar";
+import { authStore } from "@/store/auth";
+import { mailStore } from "@/store/mail";
+import { vipStore } from "@/store/vip";
+import { refferalStore } from '@/store/refferal';
+import { menuStore } from "@/store/menu";
+import { bonusTransactionStore } from "@/store/bonusTransaction";
+import { agentStore } from "@/store/agent";
 import { storeToRefs } from "pinia";
+import { type PromoListData } from "@/interface/promo";
+
+const { setAuthModalType } = authStore();
+const { setUserNavBarToggle } = appBarStore();
+const { setDepositDialogToggle } = appBarStore();
+const { setWithdrawDialogToggle } = appBarStore();
+const { setAccountDialogShow } = appBarStore();
+const { setOverlayScrimShow } = appBarStore();
+const { setMainBlurEffectShow } = appBarStore();
+const { setHeaderBlurEffectShow } = appBarStore();
+const { setMenuBlurEffectShow } = appBarStore();
+const { setCashDialogToggle } = appBarStore();
+const { setBonusTabIndex } = bonusTransactionStore();
+const { setTransactionTab } = bonusTransactionStore();
+const { setRefferalDialogShow } = refferalStore();
+const { setMailMenuShow } = mailStore();
+const { dispatchVipInfo } = vipStore();
+const { dispatchVipLevels } = vipStore();
+const { setDepositWithdrawToggle } = appBarStore();
+const { setVipNavBarToggle } = vipStore();
+const { setNavBarToggle } = appBarStore();
+const { dispatchVipLevelAward } = vipStore();
+const { setRewardNavShow } = menuStore();
+const { setAgentNavBarToggle } = agentStore();
 
 const { t } = useI18n();
+const router = useRouter();
 const activeIndex = ref<number>(0);
 const allSvgIconColor = ref<string>("#ffffff");
 const vipSvgIconColor = ref<string>("#7782AA");
@@ -71,6 +104,100 @@ const promotionSvgTransform = (el: any) => {
   }
   return el;
 };
+const token = computed(() => {
+  const { getToken } = storeToRefs(authStore());
+  return getToken.value;
+});
+
+const handleContent = (item: PromoListData) => {
+  if(token.value == undefined){
+    setAuthModalType("login");
+    setOverlayScrimShow(false);
+  }
+  else{
+    setDepositWithdrawToggle(true);
+    setMainBlurEffectShow(true);
+    setHeaderBlurEffectShow(true);
+    setMenuBlurEffectShow(true);
+    setDepositDialogToggle(true);
+    setCashDialogToggle(true);
+    setUserNavBarToggle(false);
+  }
+  /*else{
+    switch (item.click_feedback) {
+      case 5:
+        switch (item.content) {
+          case "deposit":
+            setDepositWithdrawToggle(true);
+            setMainBlurEffectShow(true);
+            setHeaderBlurEffectShow(true);
+            setMenuBlurEffectShow(true);
+            setDepositDialogToggle(true);
+            setCashDialogToggle(true);
+            setUserNavBarToggle(false);
+            break;
+          case "withdraw":
+            setWithdrawDialogToggle(true);
+            setCashDialogToggle(true);
+            setUserNavBarToggle(false);
+            break;
+          case "vip":
+            setVipNavBarToggle('1');
+            setNavBarToggle(false);
+            setMainBlurEffectShow(false);
+            setOverlayScrimShow(false);
+            break;
+          case "invite":
+            setAgentNavBarToggle(true);
+            setNavBarToggle(false);
+            setMainBlurEffectShow(false);
+            setOverlayScrimShow(false);
+            setTimeout(() => {
+              setMailMenuShow(false);
+              setMailMenuShow(true);
+            }, 200)
+            break;
+          case "reward":
+            setRewardNavShow(true);
+            setMainBlurEffectShow(true);
+            setOverlayScrimShow(true);
+            setUserNavBarToggle(false);
+            break;
+          case "user":
+            setAccountDialogShow(true);
+            setMainBlurEffectShow(true);
+            setHeaderBlurEffectShow(true);
+            setMenuBlurEffectShow(true);
+            setOverlayScrimShow(true);
+            setUserNavBarToggle(false);
+            break;
+          case "invite_popup":
+            setOverlayScrimShow(false);
+            setRefferalDialogShow(true)
+            setNavBarToggle(false);
+            break;
+          case "bet_task":
+            router.push({ name: 'Bonuses And Transactions' });
+            setBonusTabIndex(0);
+            setUserNavBarToggle(false);
+            break;
+          case "faq":
+            // case "/deposit":
+            router.push({name: "About_US", query: {index: 0}})
+            break;
+        }
+        break;
+      case 6:
+        break;
+      case 7:
+        break;
+      case 8:
+        break;
+      case 9:
+        break;
+    }
+  }*/
+}
 
 onMounted(async () => {
   window.scrollTo({
@@ -79,6 +206,12 @@ onMounted(async () => {
   });
   await dispatchUserActivityList();
 });
+
+const i18nButtonText = (eng: string) =>{
+  if(eng == "Go to Deposit")
+    return t("promo.text_32");
+  return "";
+}
 </script>
 
 <template>
@@ -160,11 +293,15 @@ onMounted(async () => {
     </v-navigation-drawer>
     <v-main class="m-promo-navigation-body">
       <v-card
-        class="m-promo-navigation-card mx-2 relative"
-        style="margin-top: 96px !important"
         v-for="(item, index) in promoList.group_data[0].list_data"
+        class="m-promo-navigation-card mx-2 relative"
+        :style="{ marginTop: index == 0 ? '96px !important' : '8px !important' }"
       >
-        <img :src="item.image_path" class="m-promo-card-img" />
+        <img
+          :src="item.image_path"
+          class="m-promo-card-img"
+          @click="$router.push({ name: 'Promo_Detail', query: { id: item.id } })"
+        />
         <div class="d-flex mx-2 mt-1 mb-4">
           <div
             class="text-800-12 gray d-flex align-center"
@@ -178,8 +315,9 @@ onMounted(async () => {
             width="122"
             height="32"
             v-if="item.button_path != ''"
+            @click="handleContent(item)"
           >
-            {{ t("promo.text_7") }}
+            {{i18nButtonText(item.button_text)}}
           </v-btn>
         </div>
       </v-card>
@@ -274,8 +412,9 @@ onMounted(async () => {
   }
 
   .m-promo-navigation-body {
-    height: 100vh;
+    height: calc(100vh - 70px);
     background: $agent_card_bg !important;
+    overflow-y: auto;
 
     .m-promo-navigation-card {
       // height: 160px;
@@ -358,7 +497,7 @@ onMounted(async () => {
       .m-promo-deposit-btn {
         margin-left: auto;
         border-radius: 8px;
-        background: var(--Logo-Color, #f9bc01);
+        background: #F9BC01 !important;
         box-shadow: 0px 4px 6px 1px rgba(0, 0, 0, 0.3);
 
         .v-btn__content {
