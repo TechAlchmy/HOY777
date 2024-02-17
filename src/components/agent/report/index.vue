@@ -550,7 +550,7 @@ onMounted(async () => {
 
   .el-picker-panel {
     background-color: $agent_card_notmet_bg;
-    font-family: "Inter";
+    font-family: "Inter, -apple-system";
     font-style: normal;
     font-weight: 600;
     font-size: 12px;

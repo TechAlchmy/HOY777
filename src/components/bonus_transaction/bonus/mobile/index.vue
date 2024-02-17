@@ -10,6 +10,9 @@ import { bonusStore } from "@/store/bonus";
 import { appBarStore } from "@/store/appBar";
 import moment from "moment-timezone";
 import MBonusDialog from "@/components/bonus_transaction/bonus/dialog/mobile/index.vue";
+import { group } from 'node:console';
+import { bannerStore } from '@/store/banner';
+import { currencyStore } from '@/store/currency';
 
 const { t } = useI18n()
 const { width } = useDisplay();
@@ -19,6 +22,7 @@ const { setHeaderBlurEffectShow } = appBarStore();
 const { setMenuBlurEffectShow } = appBarStore();
 const { setOverlayScrimShow } = appBarStore();
 const { dispatchUserBalance } = userStore();
+const { dispatchCurrencyList} = currencyStore();
 
 const mobileWidth = computed(() => {
   return width.value
@@ -38,7 +42,6 @@ const userBonusList = computed(() => {
   const { getBonusList } = storeToRefs(bonusStore());
   if (getBonusList.value.list != undefined) {
     getBonusList.value.list.map(item => {
-      console.log(item);
       item.rate = Math.ceil(parseInt(item.now) / parseInt(item.max) * 100);
     })
     const resultTree = groupObjects(getBonusList.value.list);
@@ -101,18 +104,32 @@ const formsList = ref<Array<any>>([
 const dialogVisible = ref<boolean>(false);
 const selectedId = ref<number>(0);
 
-const groupObjects = array => {
-  const grouped = {};
-
+const groupObjects = (array:Array<any>) => {
+  let grouped:Array<any> = [];
+  let new_item:any = -1;
+  let is_new:boolean = true;
   array.forEach(obj => {
-    const parentId = obj.relation_id;
-    if (!grouped[parentId]) {
-      grouped[parentId] = [];
-    }
-    grouped[parentId].push(obj);
+      if(obj.type == 0) {
+        if(!is_new){
+          grouped.push(new_item);
+        }
+        new_item = obj;
+        is_new = false;
+      }
+      else {
+        if(is_new){
+          grouped.push(obj);
+        }
+        else{
+          if(new_item.children == undefined)
+            new_item.children = [];
+          new_item.children.push(obj);
+        }
+      }
   });
-
-  const buildTree = parentId => {
+  if(new_item != -1)
+    grouped.push(new_item);
+  /*const buildTree = parentId => {
     if (!grouped[parentId]) {
       return [];
     }
@@ -124,9 +141,8 @@ const groupObjects = array => {
       }
       return obj;
     });
-  };
-
-  return buildTree(0);
+  };*/
+  return grouped;
 };
 
 const bonusDialogHide = () => {
@@ -145,9 +161,41 @@ const confirmDailogShow = (id: number) => {
   setMenuBlurEffectShow(true);
   setOverlayScrimShow(true);
 };
+
+const formatCurrency = (currency: number, currencyUnit: string) => {
+  let locale = 'pt-BR';
+  switch (currencyUnit) {
+    case "BRL":
+      locale = 'pt-BR';
+      break;
+    case "PHP":
+      locale = 'en-PH';
+      break;
+    case "PEN":
+      locale = 'en-PE';
+      break;
+    case "MXN":
+      locale = 'es-MX';
+      break;
+    case "CLP":
+      locale = 'es-CL';
+      break;
+    case "USD":
+      locale = 'en-US';
+    case "COP":
+      locale = 'es-CO';
+      break;
+  }
+  const fomarttedAmount = currency.toLocaleString(locale, {
+    style: "currency",
+    currency: currencyUnit,
+  })
+  return fomarttedAmount
+}
 onMounted(async () => {
   await dispatchUserBonus();
   await dispatchUserBalance();
+  await dispatchCurrencyList();
 })
 </script>
 
@@ -165,7 +213,7 @@ onMounted(async () => {
         </template>
         <v-list-item-title class="ml-4" style="line-height: 17px">
           <div class="text-400-10 text-gray">{{ t("bonus.account_balance") }}</div>
-          <div class="text-600-12 white">R$ {{ userBalance.real }}</div>
+          <div class="text-600-12 white">{{formatCurrency(Number(userBalance.real), userBalance.currency)}}</div>
         </v-list-item-title>
         <!-- <template v-slot:append>
           <div v-ripple.center style="width: 24px; height: 24px">
@@ -179,7 +227,7 @@ onMounted(async () => {
         </template>
         <v-list-item-title class="ml-4" style="line-height: 17px">
           <div class="text-400-10 text-gray">{{ t("bonus.bonus_money") }}</div>
-          <div class="text-600-12 white">R$ {{ userBalance.bonus }}</div>
+          <div class="text-600-12 white">{{formatCurrency(Number(userBalance.bonus), userBalance.currency)}}</div>
         </v-list-item-title>
       </v-list-item>
       <v-list-item class="m-bg-color-1 mt-4 mx-6">
@@ -188,7 +236,7 @@ onMounted(async () => {
         </template>
         <v-list-item-title class="ml-4" style="line-height: 17px">
           <div class="text-400-10 text-gray">{{ t("bonus.total_text") }}</div>
-          <div class="text-600-12 white">R$ {{ userBalance.amount }}</div>
+          <div class="text-600-12 white">{{formatCurrency(Number(userBalance.amount), userBalance.currency)}}</div>
         </v-list-item-title>
       </v-list-item>
     </v-col>
@@ -204,7 +252,6 @@ onMounted(async () => {
         <template v-else v-for="(item, index) in userBonusList.list" :key="index">
           <div class="m-bonus-deposit-group mb-1">
             <v-expansion-panels>
-              
               <v-expansion-panel class="bg-color-211F31 m-collapse-body" :ripple="false">
                 <v-expansion-panel-title
                   :class="[
@@ -228,7 +275,7 @@ onMounted(async () => {
                           {{ item.type == 0 ? t("bonus.text_3") : t("bonus.text_4") }}
                         </div>
                         <div class="mt-2">
-                          {{ userBalance.currency?.toLocaleUpperCase() }}
+                          {{ item.currency?.toLocaleUpperCase() }}
                           {{ item.receive }}
                         </div>
                       </v-col>
@@ -267,19 +314,19 @@ onMounted(async () => {
                       >
                         <div class="text-400-10">No time limit</div>
                       </v-col>
-                      <v-col cols="2" class="text-right">
+                      <v-col cols="2" class="text-right" v-if="item.type == 1">
                         <div class="relative" style="margin-left: auto; width: 25px">
                           <img
                             src="@/assets/bonus/img/img_so_01.png"
-                            v-if="(Number(item.receive) * 100) / item.deposit > 50"
+                            v-if="(Number(item.gain_amount) * 100) / Number(item.deposit) > 50"
                             width="24"
                           />
                           <img src="@/assets/bonus/img/img_so_06.png" v-else width="24" />
                           <p class="m-bonus-rate">
                             {{
-                              item.deposit == 0
+                              Number(item.deposit) == 0
                                 ? 0
-                                : Number((item.receive * 100) / item.deposit)
+                                : Number((item.gain_amount * 100) / Number(item.deposit))
                             }}%
                           </p>
                         </div>
@@ -306,7 +353,7 @@ onMounted(async () => {
                               class="text-400-10"
                               :class="[item.status == 3 ? 'gray' : '']"
                             >
-                              R$ {{ item.now }} / R$ {{ item.max }}
+                              {{formatCurrency(Number(item.now), userBalance.currency)}} / {{formatCurrency(Number(item.max), userBalance.currency)}}
                             </div>
                           </v-progress-linear>
                         </div>
@@ -335,7 +382,7 @@ onMounted(async () => {
                     <tbody>
                       <tr>
                         <td>{{ moment(item.created_at * 1000).format("YYYY/MM/DD") }}</td>
-                        <td>{{ item.deposit }}</td>
+                        <td>{{ item.gain_amount }}</td>
                         <td>{{ item.receive }}</td>
                         <td>{{ item.wager }}</td>
                       </tr>
@@ -348,7 +395,6 @@ onMounted(async () => {
                   </v-row>
                 </v-expansion-panel-text>
               </v-expansion-panel>
-            
             
               <v-expansion-panel
                 class="bg-color-211F31 m-collapse-body mt-1"
@@ -385,7 +431,7 @@ onMounted(async () => {
                           }}
                         </div>
                         <div class="mt-2">
-                          {{ userBalance.currency?.toLocaleUpperCase() }}
+                          {{ item.currency?.toLocaleUpperCase() }}
                           {{ item.children[0].receive }}
                         </div>
                       </v-col>
@@ -437,7 +483,7 @@ onMounted(async () => {
                           <img
                             src="@/assets/bonus/img/img_so_01.png"
                             v-if="
-                              (Number(item.children[0].receive) * 100) /
+                              (Number(item.children[0].gain_amount) * 100) /
                                 item.children[0].deposit >
                               50
                             "
@@ -446,11 +492,11 @@ onMounted(async () => {
                           <img src="@/assets/bonus/img/img_so_06.png" v-else width="24" />
                           <p class="m-bonus-rate">
                             {{
-                              item.children[0].deposit == 0
+                              Number(item.children[0].deposit) == 0
                                 ? 0
                                 : Number(
-                                    (item.children[0].receive * 100) /
-                                      item.children[0].deposit
+                                    (item.children[0].gain_amount * 100) /
+                                    Number(item.children[0].deposit)
                                   )
                             }}%
                           </p>
@@ -478,8 +524,7 @@ onMounted(async () => {
                               class="text-400-10"
                               :class="[item.children[0].status == 3 ? 'gray' : '']"
                             >
-                              R$ {{ item.children[0].now }} / R$
-                              {{ item.children[0].max }}
+                              {{formatCurrency(Number(item.children[0].now), userBalance.currency)}}/ {{formatCurrency(Number(item.children[0].max), userBalance.currency)}}
                             </div>
                           </v-progress-linear>
                         </div>
@@ -515,7 +560,7 @@ onMounted(async () => {
                             )
                           }}
                         </td>
-                        <td>{{ item.children[0].deposit }}</td>
+                        <td>{{ item.children[0].gain_amount }}</td>
                         <td>{{ item.children[0].receive }}</td>
                         <td>{{ item.children[0].wager }}</td>
                       </tr>

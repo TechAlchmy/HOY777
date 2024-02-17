@@ -15,10 +15,12 @@ export interface BonusItem {
     max: string
     ended_at: number
     created_at: number
-    deposit: number
+    gain_amount: string
+    currency: string
     receive: number
     wager: number
     rate: number
+    deposit: string
 }
 
 export interface GetBonusList {

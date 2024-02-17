@@ -14,6 +14,8 @@ import WarningIcon from "@/components/global/notification/WarningIcon.vue";
 import { socketStore } from "@/store/socket";
 import { useToast } from "vue-toastification";
 import { useRoute } from "vue-router";
+import { bannerStore } from "@/store/banner";
+import { currencyStore } from "@/store/currency";
 
 const Signup = defineComponent({
   components: {
@@ -30,6 +32,7 @@ const Signup = defineComponent({
     const { dispatchUserProfile } = authStore();
     const { dispatchUserBalance } = userStore();
     const { dispatchSocketConnect } = socketStore();
+    const { dispatchCurrencyList } = currencyStore();
 
     const route = useRoute();
 
@@ -219,6 +222,7 @@ const Signup = defineComponent({
       if (success.value) {
         await dispatchUserProfile();
         await dispatchUserBalance();
+        await dispatchCurrencyList();
         await dispatchSocketConnect();
         // state.notificationShow = !state.notificationShow;
         // state.checkIcon = new URL(
@@ -715,7 +719,7 @@ export default Signup;
 
 // divider
 .divide-text {
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 500;
   font-size: 18px;
@@ -745,7 +749,7 @@ export default Signup;
 
 // ask signin text
 .signin-text {
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -756,7 +760,7 @@ export default Signup;
 
 .signin-text2 {
   cursor: pointer;
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 800;
   font-size: 16px;
@@ -766,7 +770,7 @@ export default Signup;
 
 // agreement
 .agreement-text {
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 600;
   font-size: 14px;

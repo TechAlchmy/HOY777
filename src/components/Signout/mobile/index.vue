@@ -124,7 +124,7 @@ onMounted(() => {
       position: absolute;
       top: 0px;
       border-radius: 8px;
-      background: linear-gradient(180deg, #17c648 0%, #ffc327 0%, #07500e 100%);
+      background: #23262F;
       text-align: center;
       height: 201px;
       animation-name: scaling;
@@ -168,7 +168,7 @@ onMounted(() => {
 
       .v-btn__content {
         text-align: center;
-        font-family: "Inter";
+        font-family: "Inter, -apple-system";
         font-size: 14px;
         font-style: normal;
         font-weight: 800;

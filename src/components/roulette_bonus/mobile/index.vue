@@ -723,7 +723,7 @@ onMounted(() => {
       .v-btn__content {
         color: #fff;
         text-align: center;
-        font-family: "Inter";
+        font-family: "Inter, -apple-system";
         font-size: 10px;
         font-style: normal;
         font-weight: 700;

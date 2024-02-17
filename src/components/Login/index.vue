@@ -14,6 +14,8 @@ import { vipStore } from "@/store/vip";
 import { useToast } from "vue-toastification";
 import { useRoute } from "vue-router";
 import { gameStore } from "@/store/game";
+import { bannerStore } from "@/store/banner";
+import { currencyStore } from "@/store/currency";
 
 const Login = defineComponent({
   components: {
@@ -29,6 +31,7 @@ const Login = defineComponent({
     const { setAuthModalType } = authStore();
     const { setToken } = authStore();
     const { dispatchUserBalance } = userStore();
+    const { dispatchCurrencyList } = currencyStore();
     const { dispatchSocketConnect } = socketStore();
     const { dispatchVipInfo } = vipStore();
     const { dispatchVipLevels } = vipStore();
@@ -126,6 +129,7 @@ const Login = defineComponent({
       if (success.value) {
         await dispatchUserProfile();
         await dispatchUserBalance();
+        await dispatchCurrencyList();
         await dispatchVipInfo();
         await dispatchVipLevels();
         // await dispatchSocketConnect();
@@ -137,7 +141,7 @@ const Login = defineComponent({
         // state.notificationText = t("login.submit_result.success_text");
         if (route.name == 'Sports') {
           await closeKill();
-          await dispatchGameEnter({ id: '9999' });
+          // await dispatchGameEnter({ id: '9999', demo: false });
           await getGameBetbyInit();
         }
         const toast = useToast();
@@ -484,7 +488,7 @@ export default Login;
 
 // divider
 .divide-text {
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 500;
   font-size: 18px;
@@ -514,7 +518,7 @@ export default Login;
 
 .login-forget-passwrod-text {
   cursor: pointer;
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 400;
   font-size: 14px;

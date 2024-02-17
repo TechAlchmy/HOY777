@@ -14,6 +14,8 @@ import { useDisplay } from "vuetify";
 import SuccessIcon from "@/components/global/notification/SuccessIcon.vue";
 import WarningIcon from "@/components/global/notification/WarningIcon.vue";
 import { useToast } from "vue-toastification";
+import { bannerStore } from "@/store/banner";
+import { currencyStore } from "@/store/currency";
 
 const Login = defineComponent({
   components: {
@@ -38,7 +40,7 @@ const Login = defineComponent({
     const { dispatchVipLevels } = vipStore();
     const { dispatchVipLevelAward } = vipStore();
     const { width } = useDisplay();
-
+    const {dispatchCurrencyList} = currencyStore();
     // initiate component state
     const state = reactive({
       currentPage: 0, // default login form
@@ -122,6 +124,7 @@ const Login = defineComponent({
       if (success.value) {
         await dispatchUserProfile();
         await dispatchUserBalance();
+        await dispatchCurrencyList();
         // await dispatchUserInvite();
         await dispatchVipInfo();
         await dispatchVipLevels();
@@ -483,7 +486,7 @@ export default Login;
 @media (max-width: 600px) {
   .v-field__field {
     color: var(--sec-text-7782-aa, #7782aa);
-    font-family: "Inter";
+    font-family: "Inter, -apple-system";
     font-size: 20px;
     font-style: normal;
     font-weight: 400;
@@ -492,7 +495,7 @@ export default Login;
 
     input {
       padding-top: 6px !important;
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 12px;
       font-style: normal;
       font-weight: 600;
@@ -500,7 +503,7 @@ export default Login;
     }
 
     .v-label.v-field-label {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 10px;
       font-style: normal;
       font-weight: 400;
@@ -563,7 +566,7 @@ export default Login;
 .m-signin-btn-text {
   .v-btn__content {
     text-align: center;
-    font-family: "Inter";
+    font-family: "Inter, -apple-system";
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
@@ -608,7 +611,7 @@ export default Login;
 
 // divider
 .m-divide-text {
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -624,7 +627,7 @@ export default Login;
 
 // divider
 .divide-text {
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -655,7 +658,7 @@ export default Login;
 
 .login-forget-passwrod-text {
   cursor: pointer;
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -672,7 +675,7 @@ export default Login;
 
   .v-field__field {
     .v-label.v-field-label {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 12px !important;
       font-style: normal;
       font-weight: 400;
@@ -700,7 +703,7 @@ export default Login;
     }
 
     .v-label.v-field-label {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 12px !important;
       font-style: normal;
       font-weight: 400;
@@ -724,7 +727,7 @@ export default Login;
 
   .v-field__field {
     .v-label.v-field-label {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 12px !important;
       font-style: normal;
       font-weight: 400;

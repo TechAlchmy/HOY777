@@ -509,7 +509,7 @@ onMounted(async () => {
 
   .el-picker-panel {
     background-color: #181522;
-    font-family: "Inter";
+    font-family: "Inter, -apple-system";
     font-style: normal;
     font-weight: 600;
     font-size: 12px;
@@ -619,7 +619,7 @@ onMounted(async () => {
 
   .el-picker-panel {
     background-color: #181522;
-    font-family: "Inter";
+    font-family: "Inter, -apple-system";
     font-style: normal;
     font-weight: 600;
     font-size: 12px;

@@ -1003,7 +1003,7 @@ onMounted(async () => {
     // background: rgba(119, 130, 170, 1);
     font-weight: 400;
     font-size: 10px !important;
-    font-family: "Inter";
+    font-family: "Inter, -apple-system";
     opacity: 1;
   }
 }
@@ -1026,7 +1026,7 @@ onMounted(async () => {
 
   .v-field__field {
     .v-label.v-field-label {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 12px !important;
       font-style: normal;
       font-weight: 400;

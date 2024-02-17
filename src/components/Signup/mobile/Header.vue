@@ -119,7 +119,7 @@ export default SignupHeader;
 }
 
 .m-logo-text2 {
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 700;
   font-size: 16px;

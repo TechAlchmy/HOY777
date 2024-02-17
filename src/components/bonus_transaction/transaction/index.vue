@@ -59,9 +59,9 @@ const vipRebateHistory = computed(() => {
 const vipLevelRewardHistory = computed(() => {
   const { getVipLevelRewardHistory } = storeToRefs(vipStore());
   console.log(getVipLevelRewardHistory.value);
-  getVipLevelRewardHistory.value.list.map((item) => {
-    item.type = "Rank Bonus";
-  });
+  // getVipLevelRewardHistory.value.list.map((item) => {
+  //   item.type = "Rank Bonus";
+  // });
   return getVipLevelRewardHistory.value;
 });
 
@@ -142,7 +142,7 @@ onMounted(async () => {
   await dispatchTransactionHistory({
     page_size: pageSize.value,
     start_time: Math.ceil(moment().valueOf() / 1000),
-    lid: 0,
+    lid: Number(0).toString(),
   });
   // await dispatchVipRebateHistory({
   //   page_num: pageNum.value,

@@ -22,6 +22,8 @@ import SuccessIcon from "@/components/global/notification/SuccessIcon.vue";
 import WarningIcon from "@/components/global/notification/WarningIcon.vue";
 import { useToast } from "vue-toastification";
 import { useRoute, useRouter } from "vue-router";
+import { bannerStore } from "@/store/banner";
+import { currencyStore } from "@/store/currency";
 
 const MSignup = defineComponent({
   components: {
@@ -43,6 +45,7 @@ const MSignup = defineComponent({
     const { setDialogCheckbox } = authStore();
     const { setNickNameDialogVisible } = authStore();
     const { dispatchUserBalance } = userStore();
+    const { dispatchCurrencyList} = currencyStore();
     const { dispatchSocketConnect } = socketStore();
     const { setAuthDialogVisible } = authStore();
 
@@ -299,6 +302,7 @@ const MSignup = defineComponent({
       if (success.value) {
         await dispatchUserProfile();
         await dispatchUserBalance();
+        await dispatchCurrencyList();
         await dispatchSocketConnect();
         setSignUpForm(false);
         emit("close");
@@ -834,7 +838,7 @@ export default MSignup;
 @media (max-width: 600px) {
   .v-field__field {
     color: var(--sec-text-7782-aa, #7782aa);
-    font-family: "Inter";
+    font-family: "Inter, -apple-system";
     font-size: 20px;
     font-style: normal;
     font-weight: 400;
@@ -843,7 +847,7 @@ export default MSignup;
 
     input {
       padding-top: 6px !important;
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 12px;
       font-style: normal;
       font-weight: 600;
@@ -851,7 +855,7 @@ export default MSignup;
     }
 
     .v-label.v-field-label {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 10px;
       font-style: normal;
       font-weight: 400;
@@ -880,7 +884,7 @@ export default MSignup;
   margin-top: 80px;
   font-weight: 600;
   font-size: 16px;
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
 }
 
 .m-signup-continue-btn {
@@ -938,7 +942,7 @@ export default MSignup;
   border-radius: 8px !important;
   .v-btn__content {
     text-align: center;
-    font-family: "Inter";
+    font-family: "Inter, -apple-system";
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
@@ -958,7 +962,7 @@ export default MSignup;
   .v-btn__content {
     color: #ffffff;
     text-align: center;
-    font-family: "Inter";
+    font-family: "Inter, -apple-system";
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
@@ -1035,7 +1039,7 @@ export default MSignup;
 
 // divider
 .m-divide-text {
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -1066,7 +1070,7 @@ export default MSignup;
 
 // ask signin text
 .signin-text {
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -1077,7 +1081,7 @@ export default MSignup;
 
 .signin-text2 {
   cursor: pointer;
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 800;
   font-size: 16px;
@@ -1087,7 +1091,7 @@ export default MSignup;
 
 // agreement
 .agreement-text {
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
@@ -1126,7 +1130,7 @@ export default MSignup;
       padding-top: 2px !important;
     }
     .v-label.v-field-label {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 12px !important;
       font-style: normal;
       font-weight: 400;
@@ -1154,7 +1158,7 @@ export default MSignup;
       padding-right: 30px !important;
     }
     .v-label.v-field-label {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 12px !important;
       font-style: normal;
       font-weight: 400;
@@ -1182,7 +1186,7 @@ export default MSignup;
       padding-top: 2px !important;
     }
     .v-label.v-field-label {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 12px !important;
       font-style: normal;
       font-weight: 400;

@@ -19,6 +19,8 @@ import SuccessIcon from "@/components/global/notification/SuccessIcon.vue";
 import WarningIcon from "@/components/global/notification/WarningIcon.vue";
 import { useToast } from "vue-toastification";
 import { useRoute, useRouter } from "vue-router";
+import { bannerStore } from "@/store/banner";
+import { currencyStore } from "@/store/currency";
 
 const MSignup = defineComponent({
   components: {
@@ -43,6 +45,7 @@ const MSignup = defineComponent({
     const { setNickNameDialogVisible } = authStore();
     const { dispatchUserBalance } = userStore();
     const { dispatchSocketConnect } = socketStore();
+    const { dispatchCurrencyList } = currencyStore();
 
     const { width } = useDisplay();
     const route = useRoute();
@@ -284,6 +287,8 @@ const MSignup = defineComponent({
         await dispatchUserProfile();
         await dispatchUserBalance();
         await dispatchSocketConnect();
+        await dispatchCurrencyList();
+
         setAuthDialogVisible(false);
         setNickNameDialogVisible(true);
         const toast = useToast();
@@ -643,7 +648,7 @@ export default MSignup;
 @media (max-width: 600px) {
   .v-field__field {
     color: var(--sec-text-7782-aa, #7782aa);
-    font-family: "Inter";
+    font-family: "Inter, -apple-system";
     font-size: 20px;
     font-style: normal;
     font-weight: 400;
@@ -652,7 +657,7 @@ export default MSignup;
 
     input {
       padding-top: 6px !important;
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 12px;
       font-style: normal;
       font-weight: 600;
@@ -660,7 +665,7 @@ export default MSignup;
     }
 
     .v-label.v-field-label {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 10px;
       font-style: normal;
       font-weight: 400;
@@ -683,7 +688,7 @@ export default MSignup;
   margin-top: 80px;
   font-weight: 600;
   font-size: 16px;
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
 }
 
 .m-signup-continue-btn {
@@ -742,7 +747,7 @@ export default MSignup;
 
   .v-btn__content {
     text-align: center;
-    font-family: "Inter";
+    font-family: "Inter, -apple-system";
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
@@ -762,7 +767,7 @@ export default MSignup;
   .v-btn__content {
     color: #ffffff;
     text-align: center;
-    font-family: "Inter";
+    font-family: "Inter, -apple-system";
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
@@ -806,7 +811,7 @@ export default MSignup;
 
 // divider
 .m-divide-text {
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -837,7 +842,7 @@ export default MSignup;
 
 // ask signin text
 .signin-text {
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -848,7 +853,7 @@ export default MSignup;
 
 .signin-text2 {
   cursor: pointer;
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 800;
   font-size: 16px;
@@ -858,7 +863,7 @@ export default MSignup;
 
 // agreement
 .agreement-text {
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
@@ -898,7 +903,7 @@ export default MSignup;
     }
 
     .v-label.v-field-label {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 12px !important;
       font-style: normal;
       font-weight: 400;
@@ -927,7 +932,7 @@ export default MSignup;
     }
 
     .v-label.v-field-label {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 12px !important;
       font-style: normal;
       font-weight: 400;
@@ -957,7 +962,7 @@ export default MSignup;
     }
 
     .v-label.v-field-label {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-size: 12px !important;
       font-style: normal;
       font-weight: 400;

@@ -115,7 +115,7 @@ export default LoginHeader;
   top: 57px;
   left: 263px;
   z-index: 2;
-  font-family: "Inter";
+  font-family: "Inter, -apple-system";
   font-style: normal;
   font-weight: 700;
   font-size: 17px;

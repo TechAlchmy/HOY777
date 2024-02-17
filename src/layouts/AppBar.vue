@@ -8,6 +8,7 @@ import { appBarStore } from "@/store/appBar";
 import { vipStore } from "@/store/vip";
 import { socketStore } from "@/store/socket";
 import { refferalStore } from '@/store/refferal';
+import { gameStore } from "@/store/game";
 import { loginBonusStore } from "@/store/loginBonus";
 import { bonusTransactionStore } from "@/store/bonusTransaction";
 import { mailStore } from "@/store/mail";
@@ -18,7 +19,7 @@ import { type GetCurrencyBalanceList } from '@/interface/currency';
 import { useToast } from "vue-toastification";
 import * as clipboard from "clipboard-polyfill";
 import { useDisplay } from 'vuetify'
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import SuccessIcon from '@/components/global/notification/SuccessIcon.vue';
 import img_vipemblem_2 from "@/assets/vip/image/img_vipemblem_2.png";
 import img_vipemblem_1_24 from "@/assets/vip/image/img_vipemblem_1-24.png";
@@ -30,10 +31,13 @@ import img_vipemblem_159_199 from "@/assets/vip/image/img_vipemblem_159-199.png"
 import img_vipemblem_200 from "@/assets/vip/image/img_vipemblem_200.png";
 
 import { currencyStore } from "@/store/currency";
+import { bonusStore } from "@/store/bonus";
+import { bannerStore } from "@/store/banner";
 
 const { setAuthModalType } = authStore();
 const { setAuthDialogVisible } = authStore();
 const { dispatchUserProfile } = authStore();
+const { dispatchSignout } = authStore();
 const { setRightBarToggle } = appBarStore();
 const { setNavBarToggle } = appBarStore();
 const { setOverlayScrimShow } = appBarStore();
@@ -53,9 +57,14 @@ const { dispatchSocketConnect } = socketStore();
 const { setDepositWithdrawToggle } = appBarStore();
 const { setBonusDashboardDialogVisible } = appBarStore();
 const { dispatchCurrencyList } = currencyStore();
+const { dispatchUserBonus } = bonusStore();
+
+const { dispatchBannerList } = bannerStore();
+const { dispatchGameEnter, getGameBetbyInit, closeKill } = gameStore();
 
 const { name, width } = useDisplay()
 const router = useRouter();
+const route = useRoute();
 
 type dialogType = "login" | "signup";
 const color = ref<string>("#1D2027");
@@ -175,6 +184,12 @@ const mobileWidth: any = computed(() => {
   return width.value;
 })
 
+
+const errMessage = computed(() => {
+  const { getErrMessage } = storeToRefs(authStore());
+  return getErrMessage.value
+})
+
 const refferalAppBarShow = computed(() => {
   const { getRefferalAppBarShow } = storeToRefs(refferalStore());
   return getRefferalAppBarShow.value;
@@ -227,10 +242,11 @@ watch(mobileWidth, (newValue: number) => {
   }
 })
 
-watch(currencyMenuShow, (value: boolean) => {
+watch(currencyMenuShow, async (value: boolean) => {
   console.log(value);
   if (mobileWidth.value < 600) {
     if (value) {
+      await dispatchCurrencyList();
       setUserNavBarToggle(false);
       setMainBlurEffectShow(false);
       setNavBarToggle(false);
@@ -240,7 +256,6 @@ watch(currencyMenuShow, (value: boolean) => {
         setFixPositionEnable(true);
         setMainBlurEffectShow(true);
       }, 10)
-
     } else {
       setFixPositionEnable(false);
     }
@@ -272,7 +287,12 @@ const showSignoutDialog = () => {
   setAuthModalType("signout");
 }
 
-const depositDialogShow = () => {
+const depositDialogShow = async () => {
+  // await dispatchUserProfile();
+  // if (errMessage.value == "Credentials have expired. Please log in again") {
+  //   dispatchSignout();
+  //   return;
+  // }
   setDepositWithdrawToggle(true);
   setNavBarToggle(false);
   setUserNavBarToggle(false);
@@ -347,8 +367,10 @@ const handleSelectCurrency = async (item: GetCurrencyBalanceList) => {
   selectedCurrencyItem.value = item;
 
   await dispatchSetUserCurrency(item.currency);
-  await dispatchUserBalance();
-
+  if (route.name == 'Sports') {
+    await closeKill();
+    await getGameBetbyInit();
+  }
   setTimeout(() => {
     setOverlayScrimShow(false);
     setMainBlurEffectShow(false);
@@ -356,22 +378,31 @@ const handleSelectCurrency = async (item: GetCurrencyBalanceList) => {
   }, 300)
 }
 
-const handleCurrencyMenuShow = () => {
+const handleCurrencyMenuShow = async () => {
   currencyMenuShow.value = !currencyMenuShow.value;
+  await dispatchUserBalance();
+  await dispatchUserBonus();
 }
 
-const showUserNavBar = (): void => {
+const showUserNavBar = async () => {
+  // await dispatchUserProfile();
+  // console.log(errMessage.value);
+  // if (errMessage.value == "Credentials have expired. Please log in again") {
+  //   dispatchSignout();
+  //   return;
+  // }
   userNavBarToggle.value = !userNavBarToggle.value
   setNavBarToggle(false)
   setBonusDashboardDialogVisible(false);
   setMainBlurEffectShow(false);
-  // setTimeout(() => {
-  setUserNavBarToggle(userNavBarToggle.value);
-  setMainBlurEffectShow(userNavBarToggle.value);
-  // }, 10)
+  setTimeout(() => {
+    setUserNavBarToggle(userNavBarToggle.value);
+    setMainBlurEffectShow(userNavBarToggle.value);
+  }, 10)
 }
 
 watch(userBalance, (value) => {
+  console.log("userbalance================");
   let locale = 'pt-BR';
   const currencyUnit = value.currency
   switch (currencyUnit) {
@@ -385,7 +416,7 @@ watch(userBalance, (value) => {
       locale = 'en-PE';
       break;
     case "MXN":
-      locale = 'en-MX';
+      locale = 'es-MX';
       break;
     case "CLP":
       locale = 'es-CL';
@@ -407,13 +438,36 @@ watch(userBalance, (value) => {
 })
 
 watch(socketBalance, (value) => {
-  const locale = 'pt-BR';
-  const currencyUnit = "BRL";
-  user.value.wallet = formatCurrency(Number(value.bal), locale, currencyUnit);
-  user.value.currency = value.cur
+  console.log("socketBalance================", value);
+  let locale = 'pt-BR';
+  switch (value.cur) {
+    case "BRL":
+      locale = 'pt-BR';
+      break;
+    case "PHP":
+      locale = 'en-PH';
+      break;
+    case "PEN":
+      locale = 'en-PE';
+      break;
+    case "MXN":
+      locale = 'es-MX';
+      break;
+    case "CLP":
+      locale = 'es-CL';
+      break;
+    case "USD":
+      locale = 'en-US';
+    case "COP":
+      locale = 'es-CO';
+      break;
+  }
+  if (user.value.currency == value.cur) {
+    user.value.wallet = formatCurrency(Number(value.bal), locale, value.cur);
+  }
   currencyList.value.map(item => {
-    if (item.name == "BRL") {
-      item.value = Number(value.bal)
+    if (item.currency == value.cur) {
+      item.amount = value.bal.toString()
     }
   })
 })
@@ -540,7 +594,8 @@ onMounted(async () => {
     <v-app-bar-nav-icon
       @click.stop="setNavBarToggle(true)"
       v-if="!navBarToggle && mobileWidth > 600"
-    ></v-app-bar-nav-icon>
+    >
+    </v-app-bar-nav-icon>
 
     <v-toolbar-title v-if="mobileWidth > 800">
       <img
@@ -609,9 +664,9 @@ onMounted(async () => {
                         <template v-slot:prepend>
                           <img width="24" />
                         </template>
-                        <v-list-item-title class="ml-2 text-700-14">{{
-                          currencyItem.currency
-                        }}</v-list-item-title>
+                        <v-list-item-title class="ml-2 text-700-14">
+                          {{ currencyItem.currency }}
+                        </v-list-item-title>
                         <template v-slot:append>
                           <p class="text-700-14 white">
                             $ {{ parseFloat(currencyItem.amount).toFixed(2) }}
@@ -766,7 +821,7 @@ onMounted(async () => {
                 <img src="@/assets/public/svg/icon_public_58.svg" />
               </template>
               <v-list-item-title class="ml-2"
-                >{{ t("appBar.id") }}ddd: {{ userInfo.uid }}</v-list-item-title
+                >{{ t("appBar.id") }}: {{ userInfo.uid }}</v-list-item-title
               >
               <template v-slot:append>
                 <img
@@ -1519,7 +1574,7 @@ onMounted(async () => {
 }
 
 .refer-friend-background {
-  background-image: url("@/assets/public/image/bg_public_28.png");
+  background-image: url("@/assets/public/image/bg_public_28.png") !important;
 }
 
 .refer-friend-img-position {
@@ -1540,7 +1595,7 @@ onMounted(async () => {
 }
 
 .app-background {
-  background-image: url("@/assets/public/image/bg_public_29.png");
+  background-image: url("@/assets/public/image/bg_public_29.png") !important;
 }
 
 .app-img-position {

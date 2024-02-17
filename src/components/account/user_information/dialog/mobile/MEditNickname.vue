@@ -301,7 +301,7 @@ const submitNickName = async () => {
 
     .v-field__field {
       .v-label.v-field-label {
-        font-family: "Inter";
+        font-family: "Inter, -apple-system";
         font-size: 12px !important;
         font-style: normal;
         font-weight: 400;

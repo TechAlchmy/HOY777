@@ -127,7 +127,7 @@ export default ValidationBox;
     padding: 0px;
 
     .validation-list-item {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-style: normal;
       font-weight: 600;
       font-size: 12px;
@@ -167,7 +167,7 @@ export default ValidationBox;
     padding: 0px;
 
     .validation-list-item {
-      font-family: "Inter";
+      font-family: "Inter, -apple-system";
       font-style: normal;
       font-weight: 600;
       font-size: 12px;
