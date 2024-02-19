@@ -857,7 +857,7 @@ onMounted(async () => {
     width: 100% !important;
     color: white !important;
     .v-btn__content {
-      font-family: Inter;
+      font-family: Inter,-apple-system,Framedcn,Helvetica Neue,Condensed,DisplayRegular,Helvetica,Arial,PingFang SC,Hiragino Sans GB,WenQuanYi Micro Hei,Microsoft Yahei,sans-serif;
       font-size: 12px;
       font-style: normal;
       font-weight: 700;
@@ -873,7 +873,7 @@ onMounted(async () => {
     width: 100% !important;
 
     .v-btn__content {
-      font-family: Inter;
+      font-family: Inter,-apple-system,Framedcn,Helvetica Neue,Condensed,DisplayRegular,Helvetica,Arial,PingFang SC,Hiragino Sans GB,WenQuanYi Micro Hei,Microsoft Yahei,sans-serif;
       font-size: 12px;
       font-style: normal;
       font-weight: 700;
@@ -912,7 +912,7 @@ onMounted(async () => {
     .v-btn__content {
       color: #fff;
       text-align: center;
-      font-family: Inter;
+      font-family: Inter,-apple-system,Framedcn,Helvetica Neue,Condensed,DisplayRegular,Helvetica,Arial,PingFang SC,Hiragino Sans GB,WenQuanYi Micro Hei,Microsoft Yahei,sans-serif;
       font-size: 14px;
       font-style: normal;
       font-weight: 700;

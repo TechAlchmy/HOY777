@@ -574,7 +574,7 @@ export default Login;
   box-shadow: 0px 4px 6px 1px #0000004d;
 
   .v-btn__content {
-    font-family: Inter;
+    font-family: Inter,-apple-system,Framedcn,Helvetica Neue,Condensed,DisplayRegular,Helvetica,Arial,PingFang SC,Hiragino Sans GB,WenQuanYi Micro Hei,Microsoft Yahei,sans-serif;
     font-size: 14px;
     font-weight: 700;
     line-height: 17px;

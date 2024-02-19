@@ -695,7 +695,7 @@ export default MSignup;
   .v-btn__content {
     color: var(--text-dark-black, white);
     text-align: center;
-    font-family: Inter;
+    font-family: Inter,-apple-system,Framedcn,Helvetica Neue,Condensed,DisplayRegular,Helvetica,Arial,PingFang SC,Hiragino Sans GB,WenQuanYi Micro Hei,Microsoft Yahei,sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
@@ -707,7 +707,7 @@ export default MSignup;
 .m-signup-confirm-btn {
   .v-btn__content {
     text-align: center;
-    font-family: Inter;
+    font-family: Inter,-apple-system,Framedcn,Helvetica Neue,Condensed,DisplayRegular,Helvetica,Arial,PingFang SC,Hiragino Sans GB,WenQuanYi Micro Hei,Microsoft Yahei,sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
@@ -719,7 +719,7 @@ export default MSignup;
   .v-btn__content {
     color: var(--text-dark-black, #fff);
     text-align: center;
-    font-family: Inter;
+    font-family: Inter,-apple-system,Framedcn,Helvetica Neue,Condensed,DisplayRegular,Helvetica,Arial,PingFang SC,Hiragino Sans GB,WenQuanYi Micro Hei,Microsoft Yahei,sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 700;

@@ -2244,7 +2244,7 @@ export default Dashboard;
 
   .v-btn__content {
     text-align: center;
-    font-family: Inter;
+    font-family: Inter,-apple-system,Framedcn,Helvetica Neue,Condensed,DisplayRegular,Helvetica,Arial,PingFang SC,Hiragino Sans GB,WenQuanYi Micro Hei,Microsoft Yahei,sans-serif;
     font-size: 16px;
     font-style: normal;
     font-weight: 700;
