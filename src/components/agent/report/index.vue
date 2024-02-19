@@ -210,7 +210,7 @@ onMounted(async () => {
 </script>
 <template>
   <v-row class="mx-2 mt-0">
-    <div class="m-agent-report-date-picker" @click="datePickerShow = true">
+    <div class="m-agent-report-date-picker relative" @click="datePickerShow = true">
       <el-date-picker
         v-model="selectedDate"
         popper-class="m-agent-report-date-picker-background"
@@ -550,7 +550,7 @@ onMounted(async () => {
 
   .el-picker-panel {
     background-color: $agent_card_notmet_bg;
-    font-family: "Inter, -apple-system";
+    font-family: Inter,-apple-system,Framedcn,Helvetica Neue,Condensed,DisplayRegular,Helvetica,Arial,PingFang SC,Hiragino Sans GB,WenQuanYi Micro Hei,Microsoft Yahei,sans-serif;
     font-style: normal;
     font-weight: 600;
     font-size: 12px;

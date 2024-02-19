@@ -414,7 +414,7 @@ const i18nButtonText = (eng: string) => {
   }
 
   .m-promo-navigation-body {
-    height: calc(100vh - 70px);
+    height: calc(100dvh - 70px);
     background: $agent_card_bg !important;
     overflow-y: auto;
 

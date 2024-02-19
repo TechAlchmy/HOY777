@@ -18,7 +18,7 @@ onMounted(() => {});
 
 <style lang="scss">
 @font-face {
-  font-family: "Inter";
+  font-family: Inter,-apple-system,Framedcn,Helvetica Neue,Condensed,DisplayRegular,Helvetica,Arial,PingFang SC,Hiragino Sans GB,WenQuanYi Micro Hei,Microsoft Yahei,sans-serif;
   src: local("Inter"),
     url(./fonts/Inter/Inter-VariableFont_slntwght.ttf) format("truetype");
 }

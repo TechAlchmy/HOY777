@@ -129,7 +129,7 @@ const confirmDailogShow = () => {
 
   .v-field__field {
     .v-label.v-field-label {
-      font-family: "Inter, -apple-system";
+      font-family: Inter,-apple-system,Framedcn,Helvetica Neue,Condensed,DisplayRegular,Helvetica,Arial,PingFang SC,Hiragino Sans GB,WenQuanYi Micro Hei,Microsoft Yahei,sans-serif;
       font-size: 12px !important;
       font-style: normal;
       font-weight: 400;
