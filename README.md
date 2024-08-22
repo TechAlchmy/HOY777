@@ -10,7 +10,6 @@ yarn
 npm install
 
 # pnpm
-
 pnpm install
 ```
 
